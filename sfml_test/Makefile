@@ -14,8 +14,8 @@ DTMF.o : DTMF.cpp DTMF.hpp
 	$(CC) $(CFLAGS) DTMF.cpp
 
 clean_all:
-	\rm *.o *~ bin
+	\rm DTMF.o test.o bin
 
 clean:
-	\rm *.o *~
+	\rm DTMF.o test.o
 
