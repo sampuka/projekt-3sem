@@ -3,6 +3,10 @@
 #include <SFML/Audio.hpp>
 #include "DTMF.hpp"
 
+// Windows autism
+#define _USE_MATH_DEFINES
+#include "math.h"
+
 using namespace std;
 
 DTMF::DTMF(int toneLength)

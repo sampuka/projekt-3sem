@@ -4,6 +4,8 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
 
+#include <array>
+
 // Number of samples for a buffer
 #define SAMPLES_PER_BUFFER 100000
 
