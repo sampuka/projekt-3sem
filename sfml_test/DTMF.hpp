@@ -7,7 +7,7 @@
 #include <array>
 
 // Number of samples for a buffer
-#define SAMPLES_PER_BUFFER 10000
+#define SAMPLES_PER_BUFFER 50000
 
 // The amplitude of the samples. OPS: signed 16-bit int size
 #define SAMPLE_AMPLITUDE 15000

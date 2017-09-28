@@ -25,7 +25,7 @@ const int sampleFreqs[16][2] = {
     {1209, 941},  // STAR
     {1336, 941},  // 0
     {1447, 941},  // HASH
-    {1633, 941},  // D
+    {1633, 941}   // D
 };
 
 DTMF::DTMF(int toneLength)
