@@ -9,6 +9,25 @@
 
 using namespace std;
 
+const int sampleFreqs[16][2] = {
+    {1209, 697},  // 1
+    {1336, 697},  // 2
+    {1447, 697},  // 3
+    {1633, 697},  // A
+    {1209, 770},  // 4
+    {1336, 770},  // 5
+    {1447, 770},  // 6
+    {1633, 770},  // B
+    {1209, 852},  // 7
+    {1336, 852},  // 8
+    {1447, 852},  // 9
+    {1633, 852},  // C
+    {1209, 941},  // STAR
+    {1336, 941},  // 0
+    {1447, 941},  // HASH
+    {1633, 941}   // D
+};
+
 DTMF::DTMF(int toneLength)
 {
     sampleTime = toneLength;
@@ -18,7 +37,9 @@ DTMF::DTMF(int toneLength)
 	sampleArray[j] = {};
 	for (int i = 0; i < SAMPLES_PER_BUFFER; i++)
 	    sampleArray[j].push_back(
-		SAMPLE_AMPLITUDE*sin((2*M_PI * sampleFreqs[j] * i * ((sampleTime/(float)1000)/(float)SAMPLES_PER_BUFFER))));
+		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][0] * i * ((sampleTime/(float)1000)/(float)SAMPLES_PER_BUFFER)))+
+		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][1] * i * ((sampleTime/(float)1000)/(float)SAMPLES_PER_BUFFER)))
+		);
     }
 }
 

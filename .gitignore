@@ -3,3 +3,6 @@
 ################################################################################
 
 /sfml_test/.vs/sfml_test/v15
+/sfml_test/DTMF.o
+/sfml_test/test.o
+/sfml_test/bin
