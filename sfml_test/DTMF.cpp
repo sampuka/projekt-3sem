@@ -9,6 +9,7 @@
 
 using namespace std;
 
+// https://en.wikipedia.org/wiki/Dual-tone_multi-frequency_signaling
 const int sampleFreqs[16][2] = {
     {1209, 697},  // 1
     {1336, 697},  // 2
