@@ -37,8 +37,8 @@ DTMF::DTMF(int toneLength)
 	sampleArray[j] = {};
 	for (int i = 0; i < SAMPLES_PER_BUFFER; i++)
 	    sampleArray[j].push_back(static_cast<sf::Int16>(
-		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][0] * i * ((sampleTime/(float)1000)/(float)SAMPLES_PER_BUFFER)))+
-		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][1] * i * ((sampleTime/(float)1000)/(float)SAMPLES_PER_BUFFER)))
+		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][0] * i * ((sampleTime/1000.f)/SAMPLES_PER_BUFFER)))+
+		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][1] * i * ((sampleTime/1000.f)/SAMPLES_PER_BUFFER)))
 					 ));
     }
 }
