@@ -56,3 +56,9 @@ void DTMF::play_wait(DTMF_type type)
     play(type);
     sf::sleep(sf::milliseconds(sampleTime));
 }
+
+void DTMF::play_list(vector<DTMF_type> toneList)
+{
+    for (DTMF_type tone : toneList)
+	play_wait(tone);
+}

@@ -38,6 +38,7 @@ public:
     DTMF(int toneLength);
     void play(DTMF_type type);
     void play_wait(DTMF_type type);
+    void play_list(std::vector<DTMF_type> toneList);
 private:
     int sampleTime; // Length of tone in milliseconds
     sf::Sound sound;
