@@ -4,6 +4,7 @@
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
 
+#include <vector>
 #include <array>
 
 // Number of samples for a buffer
