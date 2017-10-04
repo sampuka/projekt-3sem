@@ -6,3 +6,6 @@
 /sfml_test/DTMF.o
 /sfml_test/test.o
 /sfml_test/bin
+/projekt_chat/bin
+/projekt_chat/DLL.o
+/projekt_chat/test.o
