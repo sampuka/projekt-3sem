@@ -2,6 +2,7 @@
 #include <cmath>
 #include <SFML/Audio.hpp>
 #include "DTMF.hpp"
+#include "rc_fft.hpp"
 
 // Windows autism
 #define _USE_MATH_DEFINES
@@ -42,6 +43,8 @@ DTMF::DTMF(int toneLength)
 		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][1] * i * ((sampleTime/1000.f)/SAMPLES_PER_BUFFER)))
 					 ));
     }
+
+    RLRecorder recorder(&currentTone);
 }
 
 void DTMF::play(DTMF_type type)
@@ -62,4 +65,9 @@ void DTMF::play_list(vector<DTMF_type> toneList)
 {
     for (DTMF_type tone : toneList)
 	play_wait(tone);
+}
+
+DTMF_type DTMF::listen()
+{
+    return currentTone;
 }
