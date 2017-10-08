@@ -35,16 +35,27 @@ RLRecorder::RLRecorder(DTMF_type *_currentTone)
 
 bool RLRecorder::onProcessSamples(const sf::Int16* samples, std::size_t sampleCount)
 {
-    cout << "sampleCount: " << sampleCount << endl;
+    cout << "sampleCount: " << sampleCount << " | ";
 
     workCArray.resize(static_cast<long unsigned int>(sampleCount));
 
     for(std::size_t i = 0; i < sampleCount; i++)
 	workCArray[i] = samples[i];
 
-    print_CArray(workCArray);
     fft(workCArray);
-    print_CArray(workCArray);
+
+    int max = 0;
+    for (Complex c : workCArray)
+	if(abs(c) > max)
+	    max = abs(c);
+    int threshold = max*0.75;
+    cout << "threshold: " << threshold << " | 0th value: " << abs(workCArray[0])<< endl;
+
+    for(std::size_t i = 0; i < sampleCount; i++)
+	if(abs(workCArray[i]) > threshold)
+	    cout << i*10 << ", "; //Maybe wrong (10 = 1/sampletime) seems to work somewhat at least
+    cout << endl;
+
     return true;
 }
 

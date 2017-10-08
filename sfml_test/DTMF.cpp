@@ -53,6 +53,9 @@ DTMF::DTMF(int toneLength)
 					 ));
     }
 
+    //Does fft on sampleArray[5] on prints all frquencies with amplitude above 50 mil (wow)
+    //The frequency ascociated with a sample might be calculated wrong, but is close
+    //Removable
     cout << "fft test" << endl;
     CArray car;
     car.resize(SAMPLES_PER_BUFFER);
@@ -93,7 +96,7 @@ void DTMF::startRecording()
 	cout << "mic available" << endl;
 
     recorder = new RLRecorder(&currentTone);
-    recorder->start(100); //VERY LOW FOR TESTING
+    recorder->start(50000);
 }
 
 DTMF_type DTMF::listen()
