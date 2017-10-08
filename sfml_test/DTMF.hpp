@@ -12,11 +12,13 @@
 class DTMF
 {
 public:
+    DTMF();
+    ~DTMF();
     DTMF(int toneLength);
     void play(DTMF_type type);
     void play_wait(DTMF_type type);
     void play_list(std::vector<DTMF_type> toneList);
-    void start_recording();
+    void startRecording();
     DTMF_type listen();
     
 private:

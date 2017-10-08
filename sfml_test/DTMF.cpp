@@ -30,6 +30,15 @@ const int sampleFreqs[16][2] = {
     {1633, 941}   // D
 };
 
+DTMF::DTMF()
+{
+}
+
+DTMF::~DTMF()
+{
+    delete recorder;
+}
+
 DTMF::DTMF(int toneLength)
 {
     sampleTime = toneLength;
@@ -43,6 +52,17 @@ DTMF::DTMF(int toneLength)
 		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][1] * i * ((sampleTime/1000.f)/SAMPLES_PER_BUFFER)))
 					 ));
     }
+
+    cout << "fft test" << endl;
+    CArray car;
+    car.resize(SAMPLES_PER_BUFFER);
+    for(int i = 0; i < SAMPLES_PER_BUFFER; i++)
+	car[i] = sampleArray[5][i];
+    fft(car);
+    for(int i = 0; i < SAMPLES_PER_BUFFER; i++)
+	if(abs(car[i]) > 50000000)
+	    cout << i*1000/sampleTime << ": " << abs(car[i]) << ", ";
+    cout << endl;
 }
 
 void DTMF::play(DTMF_type type)
@@ -65,7 +85,7 @@ void DTMF::play_list(vector<DTMF_type> toneList)
 	play_wait(tone);
 }
 
-void DTMF::start_recording()
+void DTMF::startRecording()
 {
     if (!RLRecorder::isAvailable())
         cout << "no mic available" << endl;
@@ -73,8 +93,7 @@ void DTMF::start_recording()
 	cout << "mic available" << endl;
 
     recorder = new RLRecorder(&currentTone);
-    //sf::sleep(sf::microseconds(1500));
-    recorder->start();
+    recorder->start(100); //VERY LOW FOR TESTING
 }
 
 DTMF_type DTMF::listen()
