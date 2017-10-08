@@ -44,7 +44,17 @@ DTMF::DTMF(int toneLength)
 					 ));
     }
 
+    
+    if (!RLRecorder::isAvailable())
+        cout << "no mic available" << endl;
+    else
+	cout << "mic available" << endl;
+
+
     RLRecorder recorder(&currentTone);
+    recorder.start();
+    //sf::sleep(sf::microseconds(100));
+    //recorder.stop();
 }
 
 void DTMF::play(DTMF_type type)

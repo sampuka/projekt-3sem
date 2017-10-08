@@ -12,7 +12,9 @@ class RLRecorder: public sf::SoundRecorder
 public:
     RLRecorder();
     RLRecorder(DTMF_type *_currentTone);
-    virtual bool onProcessSamples(const sf::Int16* samples, std::size_t sampleCount);
+    bool onProcessSamples(const sf::Int16* samples, std::size_t sampleCount) override;
+    bool onStart() override;
+    void onStop() override;
 
 private:
     DTMF_type *currentTone;
