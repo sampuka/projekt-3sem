@@ -7,6 +7,7 @@ using namespace std;
 int main()
 {
     DTMF dtmf(250);
+    dtmf.start_recording();
 
     vector<DTMF_type> tlfNummer = {DTMF_3, DTMF_2, DTMF_7, DTMF_8, DTMF_4, DTMF_2, DTMF_1, DTMF_8};
     dtmf.play_list(tlfNummer);

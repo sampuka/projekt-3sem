@@ -9,6 +9,11 @@ RLRecorder::RLRecorder()
 {
 }
 
+RLRecorder::~RLRecorder()
+{
+    stop();
+}
+
 RLRecorder::RLRecorder(DTMF_type *_currentTone)
 {
     currentTone = _currentTone;

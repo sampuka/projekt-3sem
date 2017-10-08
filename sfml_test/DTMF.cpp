@@ -43,18 +43,6 @@ DTMF::DTMF(int toneLength)
 		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][1] * i * ((sampleTime/1000.f)/SAMPLES_PER_BUFFER)))
 					 ));
     }
-
-    
-    if (!RLRecorder::isAvailable())
-        cout << "no mic available" << endl;
-    else
-	cout << "mic available" << endl;
-
-
-    RLRecorder recorder(&currentTone);
-    recorder.start();
-    //sf::sleep(sf::microseconds(100));
-    //recorder.stop();
 }
 
 void DTMF::play(DTMF_type type)
@@ -75,6 +63,18 @@ void DTMF::play_list(vector<DTMF_type> toneList)
 {
     for (DTMF_type tone : toneList)
 	play_wait(tone);
+}
+
+void DTMF::start_recording()
+{
+    if (!RLRecorder::isAvailable())
+        cout << "no mic available" << endl;
+    else
+	cout << "mic available" << endl;
+
+    recorder = new RLRecorder(&currentTone);
+    //sf::sleep(sf::microseconds(1500));
+    recorder->start();
 }
 
 DTMF_type DTMF::listen()

@@ -16,6 +16,7 @@ public:
     void play(DTMF_type type);
     void play_wait(DTMF_type type);
     void play_list(std::vector<DTMF_type> toneList);
+    void start_recording();
     DTMF_type listen();
     
 private:
@@ -24,7 +25,7 @@ private:
     sf::SoundBuffer buffer;
     std::array<std::vector<sf::Int16>, 16> sampleArray;
     DTMF_type currentTone;
-    RLRecorder recorder;
+    RLRecorder* recorder;
 };
 
 #endif
