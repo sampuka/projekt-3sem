@@ -22,7 +22,7 @@ public:
     DTMF_type listen();
     
 private:
-    int sampleTime; // Length of tone in milliseconds
+    int bufferTime; // Length of tone in milliseconds
     sf::Sound sound;
     sf::SoundBuffer buffer;
     std::array<std::vector<sf::Int16>, 16> sampleArray;

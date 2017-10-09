@@ -20,6 +20,8 @@ public:
 private:
     DTMF_type *currentTone;
     CArray workCArray;
+    sf::Clock clock;
+    sf::Time sampleTime;
 };
 
 #endif
