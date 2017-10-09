@@ -5,6 +5,8 @@
 /sfml_test/.vs/sfml_test/v15
 /sfml_test/DTMF.o
 /sfml_test/test.o
+/sfml_test/RLRecorder.o
+/sfml_test/rc_fft.o
 /sfml_test/bin
 /projekt_chat/bin
 /projekt_chat/DLL.o

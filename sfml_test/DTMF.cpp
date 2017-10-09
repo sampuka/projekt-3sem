@@ -2,6 +2,7 @@
 #include <cmath>
 #include <SFML/Audio.hpp>
 #include "DTMF.hpp"
+#include "rc_fft.hpp"
 
 // Windows autism
 #define _USE_MATH_DEFINES
@@ -29,6 +30,15 @@ const int sampleFreqs[16][2] = {
     {1633, 941}   // D
 };
 
+DTMF::DTMF()
+{
+}
+
+DTMF::~DTMF()
+{
+    delete recorder;
+}
+
 DTMF::DTMF(int toneLength)
 {
     sampleTime = toneLength;
@@ -42,6 +52,20 @@ DTMF::DTMF(int toneLength)
 		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][1] * i * ((sampleTime/1000.f)/SAMPLES_PER_BUFFER)))
 					 ));
     }
+
+    //Does fft on sampleArray[5] on prints all frquencies with amplitude above 50 mil (wow)
+    //The frequency ascociated with a sample might be calculated wrong, but is close
+    //Removable
+    cout << "fft test" << endl;
+    CArray car;
+    car.resize(SAMPLES_PER_BUFFER);
+    for(int i = 0; i < SAMPLES_PER_BUFFER; i++)
+	car[i] = sampleArray[5][i];
+    fft(car);
+    for(int i = 0; i < SAMPLES_PER_BUFFER; i++)
+	if(abs(car[i]) > 50000000)
+	    cout << i*1000/sampleTime << ": " << abs(car[i]) << ", ";
+    cout << endl;
 }
 
 void DTMF::play(DTMF_type type)
@@ -62,4 +86,20 @@ void DTMF::play_list(vector<DTMF_type> toneList)
 {
     for (DTMF_type tone : toneList)
 	play_wait(tone);
+}
+
+void DTMF::startRecording()
+{
+    if (!RLRecorder::isAvailable())
+        cout << "no mic available" << endl;
+    else
+	cout << "mic available" << endl;
+
+    recorder = new RLRecorder(&currentTone);
+    recorder->start(50000);
+}
+
+DTMF_type DTMF::listen()
+{
+    return currentTone;
 }
