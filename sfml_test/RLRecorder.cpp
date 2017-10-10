@@ -69,3 +69,8 @@ bool RLRecorder::onStart()
 void RLRecorder::onStop()
 {
 }
+
+void RLRecorder::updateCurrentTone()
+{
+    *currentTone = DTMF_UNKNOWN;
+}

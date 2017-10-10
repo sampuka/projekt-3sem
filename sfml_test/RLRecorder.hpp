@@ -18,6 +18,7 @@ public:
     void onStop() override;
 
 private:
+    void updateCurrentTone();
     DTMF_type *currentTone;
     CArray workCArray;
     sf::Clock clock;

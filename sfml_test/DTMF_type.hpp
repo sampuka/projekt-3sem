@@ -25,6 +25,7 @@ enum DTMF_type
     DTMF_0,
     DTMF_HASH,
     DTMF_D,
+    DTMF_UNKNOWN //Needs a non-value
 };
 
 #endif
