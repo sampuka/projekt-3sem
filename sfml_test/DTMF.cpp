@@ -3,32 +3,13 @@
 #include <SFML/Audio.hpp>
 #include "DTMF.hpp"
 #include "rc_fft.hpp"
+#include "DTMF_type.hpp"
 
 // Windows autism
 #define _USE_MATH_DEFINES
 #include "math.h"
 
 using namespace std;
-
-// https://en.wikipedia.org/wiki/Dual-tone_multi-frequency_signaling
-const int sampleFreqs[16][2] = {
-    {1209, 697},  // 1
-    {1336, 697},  // 2
-    {1447, 697},  // 3
-    {1633, 697},  // A
-    {1209, 770},  // 4
-    {1336, 770},  // 5
-    {1447, 770},  // 6
-    {1633, 770},  // B
-    {1209, 852},  // 7
-    {1336, 852},  // 8
-    {1447, 852},  // 9
-    {1633, 852},  // C
-    {1209, 941},  // STAR
-    {1336, 941},  // 0
-    {1447, 941},  // HASH
-    {1633, 941}   // D
-};
 
 DTMF::DTMF()
 {
