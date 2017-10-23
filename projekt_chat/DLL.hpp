@@ -22,6 +22,7 @@ public:
 private:
     DTMF dtmf;
 	string title;
+	int packetNumber;
 };
 
 #endif
