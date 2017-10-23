@@ -21,8 +21,10 @@ private:
     void updateCurrentTone();
     DTMF_type *currentTone;
     CArray workCArray;
+    int threshold;
     sf::Clock clock;
     sf::Time sampleTime;
+    std::vector<double> peakFreqs;
 };
 
 #endif
