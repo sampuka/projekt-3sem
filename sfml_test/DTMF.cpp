@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 #include <SFML/Audio.hpp>
 #include "DTMF.hpp"
 #include "rc_fft.hpp"
@@ -79,12 +80,19 @@ void DTMF::play_list(vector<DTMF_type> toneList)
 
 void DTMF::startRecording()
 {
+    recorder = new RLRecorder(&currentTone);
+    
     if (!RLRecorder::isAvailable())
         cout << "no mic available" << endl;
     else
-	cout << "mic available" << endl;
-
-    recorder = new RLRecorder(&currentTone);
+    {
+	vector<string> mic_list = recorder->getAvailableDevices();
+	cout << "Available devices: " << endl;
+	for (string mic : mic_list)
+	    cout << mic << endl;
+	cout << "choosing mic: " << recorder->getDefaultDevice() << endl;
+    }
+    //cout << "mic available" << endl;
     recorder->start(50000);
 }
 
