@@ -16,7 +16,7 @@ public:
 	DLL(string);
 //	void playTone();
 	void send(std::string); //should block
-//  std::string read();
+	string read();
     ~DLL();
     
 private:
