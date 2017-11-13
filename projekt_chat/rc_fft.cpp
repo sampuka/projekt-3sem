@@ -1,4 +1,8 @@
 #include "rc_fft.hpp"
+
+// Windows autism
+#define _USE_MATH_DEFINES
+#include "math.h"
  
 // Cooley–Tukey FFT (in-place, divide-and-conquer)
 // Higher memory requirements and redundancy although more intuitive

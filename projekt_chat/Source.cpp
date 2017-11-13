@@ -11,8 +11,13 @@ int main()
 	int var;
 	*/ 
 
-	DTMF dtmf(10000);
-	dtmf.play_wait(DTMF_1);
+	DTMF dtmf(500);
+	dtmf.startRecording();
+	
+	//dtmf.play_wait(DTMF_1);
+
+	int x;
+	cin >> x;
 
 	return 0;
 }
