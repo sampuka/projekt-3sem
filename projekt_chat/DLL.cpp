@@ -1,9 +1,11 @@
 #include "DLL.hpp"
 #include "DTMF.hpp"
-
+#include <vector>
 #include <string>
 #include <bitset>
 #include <iostream>
+#include <windows.h>
+#include <sstream>
 
 using namespace std;
 
@@ -21,9 +23,13 @@ DLL::DLL(string varTitle)
 // Send data
 void DLL::send(std::string varStr)
 {
-	DTMF dtmf(250);
+	DTMF dtmf(200);
 
 	// Packet: Header
+
+	// Flag: Start
+	cout << "Sending flag\t\tSTART\tDTMF_4" << endl;
+	dtmf.play_wait(DTMF_4);
 
 	// Packet number
 	switch(packetNumber)
@@ -66,8 +72,8 @@ void DLL::send(std::string varStr)
 		}
 		else if (switchSecure == "11")
 		{
-			cout << "Sending security nibble\t11\tDTMF_4" << endl;
-			dtmf.play_wait(DTMF_4);
+			cout << "Sending security nibble\t11\tDTMF_A" << endl;
+			dtmf.play_wait(DTMF_A);
 		}
 	}
 
@@ -95,32 +101,49 @@ void DLL::send(std::string varStr)
 			}
 			else if (caseVar == "11")
 			{
-				cout << "Sending data nibble\t11\tDTMF_4" << endl;
-				dtmf.play_wait(DTMF_4);
+				cout << "Sending data nibble\t11\tDTMF_A" << endl;
+				dtmf.play_wait(DTMF_A);
 			}
 		}
 	}
+
+	// Flag: Stop
+	cout << "Sending flag\t\tSTOP\tDTMF_4" << endl;
+	dtmf.play_wait(DTMF_4);
 }
 
-/*
-DTMF::DTMF()
-{
-    dtmf = DTMF::DTMF(250)
-}*/
+// Read data
 
-/*
-void DTMF::send(string)
+string DLL::read()
 {
-    // for x : i osv find ud af det din odder
-}
+/*	int dtmf_sample = 0;				// Delete later - current sample sound
+	int check = 0;						// Acknowledgement check init
+	string received_msg;				// Final received message, translated 
+	string temp_str = "";				// Temprorary string of recieved bits, without security bits
+	vector<dtmf_type> received_data;	// Vector storing received bits
+	
+	while (check == 0)
+	{
+		if (dtmf_sample() == dtmf_flag)
+		{
+			Sleep(50);
+			if (dtmf_sample() == dtmf_flag)
+			{
+				check = 1;
+			}
+		}
+	}
+
+	Sleep(100);
+
+	while (dtmf_sample() != dtmf_flag)
+	{
+		received_data.push_back(dtmf_sample());
+		Sleep(100);
+	}
 */
-
-/*
-string DTMF::read()
-{
-    return "ikke implementeret";
+	return "Not implemented";
 }
-*/
 
 DLL::~DLL()
 {
