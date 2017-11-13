@@ -105,10 +105,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DTMF.cpp" />
+    <ClCompile Include="rc_fft.cpp" />
+    <ClCompile Include="RLRecorder.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DTMF.hpp" />
+    <ClInclude Include="rc_fft.hpp" />
+    <ClInclude Include="RLRecorder.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

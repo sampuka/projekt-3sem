@@ -1,3 +1,4 @@
-﻿LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
-  sfml_test.vcxproj -> C:\Users\Mathias\source\repos\projekt-3sem\sfml_test\Release\sfml_test.exe
-  sfml_test.vcxproj -> C:\Users\Mathias\source\repos\projekt-3sem\sfml_test\Release\sfml_test.pdb (Full PDB)
+﻿  DTMF.cpp
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/OPT:ICF' specification
+  sfml_test.vcxproj -> C:\Users\Mathias\Source\Repos\projekt-3sem\sfml_test\Release\sfml_test.exe
+  sfml_test.vcxproj -> C:\Users\Mathias\Source\Repos\projekt-3sem\sfml_test\Release\sfml_test.pdb (Full PDB)
