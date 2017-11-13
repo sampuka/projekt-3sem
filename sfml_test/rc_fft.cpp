@@ -23,3 +23,11 @@ void fft(CArray& x)
         x[k+N/2] = even[k] - t;
     }
 }
+
+//https://en.wikipedia.org/wiki/Window_function#Hamming_window
+void applyHammingWindow(CArray& x)
+{
+    int len = x.size();
+    for(int i = 0; i < len; i++)
+	x[i] = (0.54-0.46*cos(2*M_PI*i/(len-1)))*x[i];
+}

@@ -34,13 +34,15 @@ RLRecorder::RLRecorder(DTMF_type *_currentTone)
     print_CArray(workCArray);
     fft(workCArray);
     print_CArray(workCArray);
+    
+    setProcessingInterval(sf::milliseconds(50));
 }
 
 bool RLRecorder::onProcessSamples(const sf::Int16* samples, std::size_t sampleCount)
 {
     sampleTime = clock.restart();
     //cout << "sampleTime: " << sampleTime.asSeconds() << endl;
-    //cout << "sampleCount: " << sampleCount << " | ";
+    //cout << "sampleCount: " << sampleCount << endl;
 
     workCArray.resize(static_cast<long unsigned int>(sampleCount));
 
@@ -48,13 +50,14 @@ bool RLRecorder::onProcessSamples(const sf::Int16* samples, std::size_t sampleCo
 	workCArray[i] = samples[i];
 
     fft(workCArray);
+    applyHammingWindow(workCArray);
 
     int max = 0;
     for (Complex c : workCArray)
 	if(abs(c) > max)
 	    max = abs(c);
 
-    threshold = 0.4*max;
+    threshold = 0.25*max;
 
     
     //cout << "threshold: " << threshold << " | 0th value: " << abs(workCArray[0])<< endl;
@@ -88,33 +91,48 @@ void RLRecorder::updateCurrentTone()
 {
     int DTMF_byte = 0;
     
-/*
     array<double, 8> DTMF_tones;
     int max = 0;
+    int min = 2147483647; //INT_MAX
+
+    /*
     for (int i = 0; i < 8; i++)
     {
 	DTMF_tones[i] = abs(workCArray[DTMFFreqs[i]*sampleTime.asSeconds()]);
 	if(DTMF_tones[i] > max)
 	    max = DTMF_tones[i];
+	if(DTMF_tones[i] < min)
+	    min = DTMF_tones[i];
     }
-    //threshold = 0.75*max;
+    threshold = 0.50*max;
+    cout << "threshold: " << threshold << " | max-min: " << max-min << " | max/min: " << max/min << endl;
+    */
+    /*
+    for(int i = 0; i < 8; i++)
+	cout << i << ": " << DTMF_tones[i] << " | ";
+
+    cout << endl;
 
     for(int i = 0; i < 8; i++)
     {
-	if(DTMF_tones[i] > threshold*0.16)
+	if(DTMF_tones[i] > threshold)
 	    DTMF_byte |= 1<<i;
     }
+
+    if(max-min < 80000)
+	DTMF_byte = 0;
 */
-/*
+
     for(double freq : peakFreqs)
 	cout << freq << ", ";
     cout << endl;
-*/
+
+
     for(double freq : peakFreqs)
 	for(int i = 0; i < 8; i++)
 	    if(abs(freq-DTMFFreqs[i]) < 35)
 		DTMF_byte |= 1<<i;
-    
+
     //cout << "DTMF_byte: " << bitset<8>(DTMF_byte).to_string() << endl;
 
     switch(DTMF_byte)
