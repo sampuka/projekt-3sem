@@ -1,4 +1,4 @@
-OBJS = DTMF.o test.o rc_fft.o RLRecorder.o
+OBJS = DTMF.o test.o rc_fft.o RLRecorder.o DTMF_type.o
 CC = g++
 DEBUG = -g
 CFLAGS = -Wall -c $(DEBUG) -std=c++11
@@ -19,9 +19,12 @@ RLRecorder.o : RLRecorder.cpp RLRecorder.hpp DTMF_type.hpp rc_fft.hpp
 rc_fft.o : rc_fft.hpp rc_fft.cpp
 	$(CC) $(CFLAGS) rc_fft.cpp
 
+DTMF_type.o : DTMF_type.hpp DTMF_type.cpp
+	$(CC) $(CFLAGS) DTMF_type.cpp
+
 clean_all:
-	\rm DTMF.o test.o rc_fft.o RLRecorder.o bin
+	\rm DTMF.o test.o rc_fft.o RLRecorder.o DTMF_type.o bin
 
 clean:
-	\rm DTMF.o test.o rc_fft.o RLRecorder.o
+	\rm DTMF.o test.o rc_fft.o RLRecorder.o DTMF_type.o
 
