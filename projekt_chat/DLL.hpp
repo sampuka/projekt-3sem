@@ -16,11 +16,12 @@ public:
 	DLL(string);
 //	void playTone();
 	void send(std::string); //should block
-	string read();
+	string interpret(DTMF_type);
+	string read(int);
     ~DLL();
     
 private:
-    DTMF dtmf;
+    DTMF* dtmf;
 	string title;
 	int packetNumber;
 };

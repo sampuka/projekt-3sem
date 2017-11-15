@@ -1,2 +1,10 @@
-﻿  sfml_test.vcxproj -> C:\Users\Mathias\source\repos\projekt-3sem\sfml_test\Debug\sfml_test.exe
-  sfml_test.vcxproj -> C:\Users\Mathias\source\repos\projekt-3sem\sfml_test\Debug\sfml_test.pdb (Partial PDB)
+﻿  RLRecorder.cpp
+RLRecorder.cpp(52): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+RLRecorder.cpp(53): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  DTMF.cpp
+  Generating Code...
+  Compiling...
+  test.cpp
+  Generating Code...
+  sfml_test.vcxproj -> C:\Users\Mathias\Source\Repos\projekt-3sem\sfml_test\Debug\sfml_test.exe
+  sfml_test.vcxproj -> C:\Users\Mathias\Source\Repos\projekt-3sem\sfml_test\Debug\sfml_test.pdb (Partial PDB)

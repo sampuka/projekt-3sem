@@ -123,9 +123,9 @@ void RLRecorder::updateCurrentTone()
 	DTMF_byte = 0;
 */
 
-    for(double freq : peakFreqs)
-	cout << freq << ", ";
-    cout << endl;
+//    for(double freq : peakFreqs)
+//	cout << freq << ", ";
+//   cout << endl;
 
 
     for(double freq : peakFreqs)
@@ -134,93 +134,92 @@ void RLRecorder::updateCurrentTone()
 		DTMF_byte |= 1<<i;
 
     //cout << "DTMF_byte: " << bitset<8>(DTMF_byte).to_string() << endl;
-
     switch(DTMF_byte)
     {
 	
     case (1<<4) + (1<<0):
 	*currentTone = DTMF_1;
-	cout << "DTMF_1" << endl;
+//	cout << "DTMF_1" << endl;
 	break;
 
     case (1<<5) + (1<<0):
 	*currentTone = DTMF_2;
-	cout << "DTMF_2" << endl;
+//	cout << "DTMF_2" << endl;
 	break;
 	
     case (1<<6) + (1<<0):
 	*currentTone = DTMF_3;
-	cout << "DTMF_3" << endl;
+//	cout << "DTMF_3" << endl;
 	break;
 	
     case (1<<7) + (1<<0):
 	*currentTone = DTMF_A;
-	cout << "DTMF_A" << endl;
+//	cout << "DTMF_A" << endl;
 	break;
 	
     case (1<<4) + (1<<1):
 	*currentTone = DTMF_4;
-	cout << "DTMF_4" << endl;
+//	cout << "DTMF_4" << endl;
 	break;
 
     case (1<<5) + (1<<1):
 	*currentTone = DTMF_5;
-	cout << "DTMF_5" << endl;
+//	cout << "DTMF_5" << endl;
 	break;
 	
     case (1<<6) + (1<<1):
 	*currentTone = DTMF_6;
-	cout << "DTMF_6" << endl;
+//	cout << "DTMF_6" << endl;
 	break;
 	
     case (1<<7) + (1<<1):
 	*currentTone = DTMF_B;
-	cout << "DTMF_B" << endl;
+//	cout << "DTMF_B" << endl;
 	break;
 	
     case (1<<4) + (1<<2):
 	*currentTone = DTMF_7;
-	cout << "DTMF_7" << endl;
+//	cout << "DTMF_7" << endl;
 	break;
 
     case (1<<5) + (1<<2):
 	*currentTone = DTMF_8;
-	cout << "DTMF_8" << endl;
+//	cout << "DTMF_8" << endl;
 	break;
 	
     case (1<<6) + (1<<2):
 	*currentTone = DTMF_9;
-	cout << "DTMF_9" << endl;
+//	cout << "DTMF_9" << endl;
 	break;
 	
     case (1<<7) + (1<<2):
 	*currentTone = DTMF_C;
-	cout << "DTMF_C" << endl;
+//	cout << "DTMF_C" << endl;
 	break;
 	
     case (1<<4) + (1<<3):
 	*currentTone = DTMF_STAR;
-	cout << "DTMF_STAR" << endl;
+//	cout << "DTMF_STAR" << endl;
 	break;
 
     case (1<<5) + (1<<3):
 	*currentTone = DTMF_0;
-	cout << "DTMF_0" << endl;
+//	cout << "DTMF_0" << endl;
 	break;
 	
     case (1<<6) + (1<<3):
 	*currentTone = DTMF_HASH;
-	cout << "DTMF_HASH" << endl;
+//	cout << "DTMF_HASH" << endl;
 	break;
 	
     case (1<<7) + (1<<3):
 	*currentTone = DTMF_D;
-	cout << "DTMF_D" << endl;
+//	cout << "DTMF_D" << endl;
 	break;
 	
     default:
 	*currentTone = DTMF_UNKNOWN;
-	cout << "DTMF_UNKNOWN" << endl;
+//	cout << "DTMF_UNKNOWN" << endl;
 	break;
     }
 }
