@@ -90,11 +90,11 @@ void RLRecorder::onStop()
 void RLRecorder::updateCurrentTone()
 {
     int DTMF_byte = 0;
-    
+    /*
     array<double, 8> DTMF_tones;
     int max = 0;
     int min = 2147483647; //INT_MAX
-
+    */
     /*
     for (int i = 0; i < 8; i++)
     {
