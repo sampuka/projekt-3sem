@@ -35,14 +35,13 @@ RLRecorder::RLRecorder(DTMF_type *_currentTone)
     fft(workCArray);
     print_CArray(workCArray);
     
-    setProcessingInterval(sf::milliseconds(50));
+    setProcessingInterval(sf::milliseconds(100));
 }
 
 bool RLRecorder::onProcessSamples(const sf::Int16* samples, std::size_t sampleCount)
 {
-    sampleTime = clock.restart();
-    //cout << "sampleTime: " << sampleTime.asSeconds() << endl;
-    //cout << "sampleCount: " << sampleCount << endl;
+    sampleTime = sf::milliseconds(sampleCount/(50.f));
+    //cout << "sampleTime: " << sampleTime.asMilliseconds() << endl;
 
     workCArray.resize(static_cast<long unsigned int>(sampleCount));
 
@@ -90,11 +89,11 @@ void RLRecorder::onStop()
 void RLRecorder::updateCurrentTone()
 {
     int DTMF_byte = 0;
-    
+    /*
     array<double, 8> DTMF_tones;
     int max = 0;
     int min = 2147483647; //INT_MAX
-
+    */
     /*
     for (int i = 0; i < 8; i++)
     {
