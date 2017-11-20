@@ -121,11 +121,6 @@ void RLRecorder::updateCurrentTone()
 	if(max-min < 80000)
 	DTMF_byte = 0;
 	*/
-	/*
-	for(double freq : peakFreqs)
-	cout << freq << ", ";
-	cout << endl;
-	*/
 
 	for (double freq : peakFreqs)
 		for (int i = 0; i < 8; i++)
@@ -219,6 +214,11 @@ void RLRecorder::updateCurrentTone()
 	default:
 		*currentTone = DTMF_UNKNOWN;
 		//cout << "DTMF_UNKNOWN" << endl;
+		/*
+		for(double freq : peakFreqs)
+		    cout << freq << ", ";
+		cout << endl;
+		*/
 		break;
 	}
 	//cout << "DTMF TYPE: " << *currentTone << endl;
