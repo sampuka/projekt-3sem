@@ -1,21 +1,33 @@
-OBJS = DLL.o test.o
+OBJS = Source.o DLL.o DTMF.o rc_fft.o RLRecorder.o DTMF_type.o
 CC = g++
 DEBUG = -g
 CFLAGS = -Wall -c $(DEBUG) -std=c++11
-LFLAGS = -Wall $(DEBUG)
+LFLAGS = -Wall $(DEBUG) -lsfml-system -lsfml-audio
 
 bin : $(OBJS)
 	$(CC) $(OBJS) -o bin $(LFLAGS)
 
-test.o : test.cpp
-	$(CC) $(CFLAGS) test.cpp
+Source.o : Source.cpp
+	$(CC) $(CFLAGS) Source.cpp
 
-DTMF.o : DLL.cpp DLL.hpp
+DLL.o : DLL.cpp DLL.hpp DTMF.hpp
 	$(CC) $(CFLAGS) DLL.cpp
 
+DTMF.o : DTMF.cpp DTMF.hpp DTMF_type.hpp DTMF_type.hpp RLRecorder.hpp
+	$(CC) $(CFLAGS) DTMF.cpp
+
+RLRecorder.o : RLRecorder.cpp RLRecorder.hpp DTMF_type.hpp rc_fft.hpp
+	$(CC) $(CFLAGS) RLRecorder.cpp
+
+rc_fft.o : rc_fft.hpp rc_fft.cpp
+	$(CC) $(CFLAGS) rc_fft.cpp
+
+DTMF_type.o : DTMF_type.hpp DTMF_type.cpp
+	$(CC) $(CFLAGS) DTMF_type.cpp
+
 clean_all:
-	\rm DLL.o test.o bin
+	\rm $(OBJS) bin
 
 clean:
-	\rm DLL.o test.o
+	\rm DTMF.o test.o rc_fft.o RLRecorder.o DTMF_type.o
 
