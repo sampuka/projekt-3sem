@@ -11,14 +11,15 @@ using namespace std;
 
 DLL::DLL()
 {
-	title = "";
 }
 
-DLL::DLL(string varTitle)
+
+DLL::DLL(int varTime)
 {
-	dtmf = new DTMF(200);
+	dtmf = new DTMF(varTime);
 	dtmf->startRecording();
-	title = varTitle;
+	
+	time = varTime;
 	packetNumber = 0;
 }
 
@@ -47,6 +48,36 @@ void DLL::send(std::string varStr)
 		break;
 	}
 	
+	// Packet: Data
+	for (std::size_t i = 0; i < varStr.size(); i++)
+	{
+		for (int indeks = 0; indeks <= 8; indeks += 2)
+		{
+			string caseVar = (bitset<8>(varStr[i]).to_string()).substr(indeks, 2);
+
+			if (caseVar == "00")
+			{
+				cout << "Sending data nibble\t00\tDTMF_1" << endl;
+				dtmf->play_wait(DTMF_1);
+			}
+			else if (caseVar == "01")
+			{
+				cout << "Sending data nibble\t01\tDTMF_2" << endl;
+				dtmf->play_wait(DTMF_2);
+			}
+			else if (caseVar == "10")
+			{
+				cout << "Sending data nibble\t10\tDTMF_3" << endl;
+				dtmf->play_wait(DTMF_3);
+			}
+			else if (caseVar == "11")
+			{
+				cout << "Sending data nibble\t11\tDTMF_A" << endl;
+				dtmf->play_wait(DTMF_A);
+			}
+		}
+	}
+
 	// Packet secure
 	int varSecure = 0;
 	for (std::size_t i = 0; i < varStr.size(); i++)
@@ -75,36 +106,6 @@ void DLL::send(std::string varStr)
 		{
 			cout << "Sending security nibble\t11\tDTMF_A" << endl;
 			dtmf->play_wait(DTMF_A);
-		}
-	}
-
-	// Packet: Data
-	for (std::size_t i = 0; i < varStr.size(); i++)
-	{
-		for (int indeks = 0; indeks <= 8; indeks += 2)
-		{
-			string caseVar = (bitset<8>(varStr[i]).to_string()).substr(indeks, 2);
-
-			if (caseVar == "00")
-			{
-				cout << "Sending data nibble\t00\tDTMF_1" << endl;
-				dtmf->play_wait(DTMF_1);
-			}
-			else if (caseVar == "01")
-			{
-				cout << "Sending data nibble\t01\tDTMF_2" << endl;
-				dtmf->play_wait(DTMF_2);
-			}
-			else if (caseVar == "10")
-			{
-				cout << "Sending data nibble\t10\tDTMF_3" << endl;
-				dtmf->play_wait(DTMF_3);
-			}
-			else if (caseVar == "11")
-			{
-				cout << "Sending data nibble\t11\tDTMF_A" << endl;
-				dtmf->play_wait(DTMF_A);
-			}
 		}
 	}
 
@@ -155,7 +156,7 @@ string DLL::interpret(DTMF_type varType)
 }
 
 // Read data
-string DLL::read(int i)
+string DLL::read()
 {
 	vector<DTMF_type> received_data;	// Vector storing received bits
 
@@ -163,12 +164,12 @@ string DLL::read(int i)
 	reset:
 	while (dtmf->listen()!= DTMF_4) // Flag = DTMF_4
 	{
-	//	cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
+		cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
 		Sleep(100);
 	}
 
 	cout << "Hearing flag\tSTART\tDTMF_4\t (1/2)" << endl;
-	Sleep(i/2);
+	Sleep(time/2);
 
 	if (dtmf->listen() != DTMF_4)
 	{
@@ -178,7 +179,7 @@ string DLL::read(int i)
 	cout << "Hearing flag\tSTART\tDTMF_4\t (2/2)" << endl;
 
 	// Wait until middle of first tone
-	Sleep(i);
+	Sleep(time);
 
 	// Start recording
 	cout << "Starting recording..." << endl;
@@ -187,11 +188,11 @@ string DLL::read(int i)
 	{
 		received_data.push_back(dtmf->listen());
 		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
-		Sleep(i);
+		Sleep(time);
 	}
-	cout << "Ended recording..." << endl;
+	cout << "Hearing flag\tSTOP\tDTMF_4\t (2/2)" << endl;
 
-	for (i = 0; i < received_data.size(); i++)
+	for (int i = 0; i < received_data.size(); i++)
 	{
 		cout << interpret(received_data[i]) << endl;
 	}

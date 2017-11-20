@@ -7,9 +7,10 @@ int main()
 {
 
 
-	DLL myDLL("Hello india");
-//	myDLL.read(1000);
+	DLL myDLL(50);
+//	myDLL.read();
 
+	/*
 	while (true)
 	{
 		cout << endl;
@@ -20,6 +21,7 @@ int main()
 
 		myDLL.send(userInput);
 	}
+	*/
 
 	int x;
 	cin >> x;
