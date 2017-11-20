@@ -16,7 +16,7 @@ DLL::DLL()
 
 DLL::DLL(string varTitle)
 {
-	dtmf = new DTMF(1000);
+	dtmf = new DTMF(200);
 	dtmf->startRecording();
 	title = varTitle;
 	packetNumber = 0;
@@ -163,7 +163,7 @@ string DLL::read(int i)
 	reset:
 	while (dtmf->listen()!= DTMF_4) // Flag = DTMF_4
 	{
-		cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
+	//	cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
 		Sleep(100);
 	}
 

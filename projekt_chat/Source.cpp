@@ -8,16 +8,18 @@ int main()
 
 
 	DLL myDLL("Hello india");
-	myDLL.read(1000);
+//	myDLL.read(1000);
 
+	while (true)
+	{
+		cout << endl;
+		cout << "Enter your message:" << endl;
+		string userInput;
+		cin >> userInput;
+		cout << endl;
 
-//	cout << myDLL.interpret(DTMF_A) << endl;
-
-//	myDLL.send("Hello india");
-
-//	dtmf.play_wait(DTMF_1);
-
-
+		myDLL.send(userInput);
+	}
 
 	int x;
 	cin >> x;
