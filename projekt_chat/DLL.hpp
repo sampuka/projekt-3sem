@@ -15,7 +15,7 @@ public:
     DLL();
 	DLL(int);
 //	void playTone();
-	void send(std::string); //should block
+	int send(std::string); //should block
 	string interpret(DTMF_type);
 	string read();
     ~DLL();

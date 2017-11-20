@@ -24,7 +24,7 @@ DLL::DLL(int varTime)
 }
 
 // Send data
-void DLL::send(std::string varStr)
+int DLL::send(std::string varStr)
 {
 
 	// Packet: Header
@@ -112,6 +112,20 @@ void DLL::send(std::string varStr)
 	// Flag: Stop
 	cout << "Sending flag\t\tSTOP\tDTMF_4" << endl;
 	dtmf->play_wait(DTMF_4);
+	cout << endl;
+
+	// Listen for acknowledge
+	for (int i = 0; i >= 100; i++)
+	{
+		if (dtmf->listen() == DTMF_5)
+		{
+			cout << "Message acknowledged by receiver." << endl;
+			return 0;
+		}
+		Sleep(10);
+	}
+	"Message not acknowledged, resending...";
+	return 0;
 }
 
 // Interpret DTMF_Type
