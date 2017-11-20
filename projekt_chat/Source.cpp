@@ -7,8 +7,8 @@ int main()
 {
 
 
-	DLL myDLL(50);
-//	myDLL.read();
+	DLL myDLL(1000);
+	myDLL.read();
 
 	/*
 	while (true)

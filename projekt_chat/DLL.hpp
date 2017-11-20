@@ -13,16 +13,17 @@ class DLL
 {
 public:
     DLL();
-	DLL(string);
+	DLL(int);
 //	void playTone();
 	void send(std::string); //should block
 	string interpret(DTMF_type);
-	string read(int);
+	string read();
     ~DLL();
     
 private:
     DTMF* dtmf;
 	string title;
+	int time;
 	int packetNumber;
 };
 
