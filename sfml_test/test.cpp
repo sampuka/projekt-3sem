@@ -15,7 +15,7 @@ int main()
 
     while(1)
     {
-	nanosleep((const struct timespec[]){{0, 100 000000L}}, NULL);
+	nanosleep((const struct timespec[]){{0, 100000000L}}, NULL);
 	cout << "tone: " << dtmf.listen() << endl;
     }
     
