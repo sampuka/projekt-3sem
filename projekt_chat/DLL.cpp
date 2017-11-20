@@ -158,14 +158,21 @@ string DLL::interpret(DTMF_type varType)
 // Read data
 string DLL::read()
 {
+	string received_msg;				// Final received message, translated
+	string number_str = "";
+	string data_str = "";				// Temprorary string of recieved bits, without security bits
+	string checksum_str = "";
 	vector<DTMF_type> received_data;	// Vector storing received bits
 
 	// Wait for start flag
+	cout << endl;
+	cout << "Ready to receive..." << endl;
+
 	reset:
 	while (dtmf->listen()!= DTMF_4) // Flag = DTMF_4
 	{
-		cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
-		Sleep(100);
+	/*	cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
+		Sleep(100);*/
 	}
 
 	cout << "Hearing flag\tSTART\tDTMF_4\t (1/2)" << endl;
@@ -182,7 +189,7 @@ string DLL::read()
 	Sleep(time);
 
 	// Start recording
-	cout << "Starting recording..." << endl;
+	cout << "Recording started." << endl;
 
 	while (dtmf->listen() != DTMF_4)
 	{
@@ -190,14 +197,65 @@ string DLL::read()
 		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
 		Sleep(time);
 	}
-	cout << "Hearing flag\tSTOP\tDTMF_4\t (2/2)" << endl;
 
-	for (int i = 0; i < received_data.size(); i++)
+	cout << "Hearing flag\tSTOP\tDTMF_4" << endl;
+	cout << "Recording ended." << endl;
+
+	// Interpret received message
+	for (int i = 0; i < 1; i++)
 	{
-		cout << interpret(received_data[i]) << endl;
+		number_str += interpret(received_data[i]);
 	}
 
-	return "Not implemented";
+	for (unsigned int i = 1; i < (received_data.size() - 3); i++)
+	{
+		data_str += interpret(received_data[i]);
+	}
+
+	for (unsigned int i = (received_data.size() - 3); i < received_data.size(); i++)
+	{
+		checksum_str += interpret(received_data[i]);
+	}
+
+	cout << endl;
+	cout << "Received number:\t" << number_str << endl << endl;
+	cout << "Received checksum:\t" << checksum_str << endl;
+
+	stringstream sstream(data_str);
+
+	while (sstream.good())
+	{
+		std::bitset<8> bits;
+		sstream >> bits;
+		received_msg += char(bits.to_ulong());
+	}
+	
+	// Checksum match
+	int rcv_checksum = 0;
+	for (std::size_t i = 0; i < received_msg.size(); i++)
+	{
+		rcv_checksum += received_msg[i];
+	}
+
+	cout << "Calculated checksum:\t" << (bitset<6>(rcv_checksum).to_string()) << endl;
+	cout << endl;
+
+	if ((bitset<6>(rcv_checksum).to_string()) != checksum_str)
+	{
+		cout << "Unmatching checksums, message discarded." << endl;
+		return "Unmatching checksums, message discarded.";
+	}
+
+	// Output message
+	cout << "Matching checksums." << endl << endl;
+	cout << "Received message:\t" << received_msg << endl;
+	
+	Sleep(100);
+	dtmf->play_wait(DTMF_5); // Acknowledge 0, should change
+	dtmf->play_wait(DTMF_5);
+	dtmf->play_wait(DTMF_5);
+
+	return received_msg;
 }
 
 DLL::~DLL()
