@@ -5,10 +5,10 @@
 
 int main()
 {
-	DLL myDLL(300);
+	DLL myDLL(200);
 //	myDLL.read();
 
-///*
+//	/*
 	while (true)
 	{
 		cout << endl;

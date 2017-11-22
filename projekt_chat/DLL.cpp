@@ -38,7 +38,9 @@ DLL::DLL(int varTime)
 	
 	time = varTime;
 
-	packetNumber = 0;
+	sentMessages = 0;
+	receivedAcks = 1;
+
 	isReceiving = false;
 	isSending = false;
 }
@@ -54,21 +56,22 @@ send_reset:
 	cout << "Sending flag\t\tSTART\tDTMF_4" << endl;
 	dtmf->play_wait(DTMF_4);
 
+	int packetNumber = (sentMessages % 2);
+
 	// Packet number
 	switch(packetNumber)
 	{
 	case 0:
-		packetNumber = 1;
 		cout << "Sending packet number\t00\tDTMF_2" << endl;
 		dtmf->play_wait(DTMF_1);
 		break;
 	case 1:
-		packetNumber = 0;
 		cout << "Sending packet number\t01\tDTMF_2" << endl;
 		dtmf->play_wait(DTMF_2);
 		break;
 	}
-	
+	sentMessages++;
+
 	// Packet: Data
 	for (std::size_t i = 0; i < varStr.size(); i++)
 	{
@@ -147,6 +150,7 @@ send_reset:
 	}
 
 	cout << "Message not acknowledged, resending..." << endl << endl;
+	sentMessages--;
 	goto send_reset;
 }
 
@@ -296,9 +300,24 @@ read_reset:
 	
 	// Wait and send acknowledge
 	mysleep(100);
-	dtmf->play_wait(DTMF_5); // Acknowledge 0, should change
-	dtmf->play_wait(DTMF_5);
-	dtmf->play_wait(DTMF_5);
+	int ackNumber = (sentMessages % 2);
+	switch (ackNumber)
+	{
+	case 0:
+		cout << "Sending acknowledge\tACK0" << endl;
+		dtmf->play_wait(DTMF_5); // Acknowledge 0, should change
+		dtmf->play_wait(DTMF_5);
+		dtmf->play_wait(DTMF_5);
+		break;
+	case 1:
+		cout << "Sending acknowledge\tACK1" << endl;
+		dtmf->play_wait(DTMF_6); // Acknowledge 0, should change
+		dtmf->play_wait(DTMF_6);
+		dtmf->play_wait(DTMF_6);
+		break;
+	}
+
+
 
 	// Add received message to message buffer
 	receivedMessages.push_back(received_msg);

@@ -24,7 +24,8 @@ private:
     DTMF* dtmf;
 	string title;
 	int time;
-	int packetNumber;
+	int sentMessages;
+	int receivedAcks;
 	bool isReceiving;
 	bool isSending;
 	vector<string> receivedMessages;
