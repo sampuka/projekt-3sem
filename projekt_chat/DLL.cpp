@@ -128,7 +128,7 @@ send_reset:
 		Sleep(10);
 	}
 
-	cout << "Message not acknowledged, resending..." << endl;
+	cout << "Message not acknowledged, resending..." << endl << endl;
 	goto send_reset;
 }
 
@@ -184,15 +184,15 @@ void DLL::read()
 	
 read_reset:
 
-	received_msg = "";				// Final received message, translated
+	received_msg = "";				
 	number_str = "";
-	data_str = "";				// Temprorary string of recieved bits, without security bits
+	data_str = "";				
 	checksum_str = "";
 	received_data.clear();
 
 	while (dtmf->listen()!= DTMF_4) // Flag = DTMF_4
 	{
-		// cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
+		//cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
 		// Waiting...
 	}
 
@@ -223,6 +223,7 @@ read_reset:
 	}
 
 	cout << "Hearing flag\tSTOP\tDTMF_4" << endl;
+
 	cout << "Recording ended." << endl;
 
 	// Interpret received message
@@ -267,6 +268,7 @@ read_reset:
 	if ((bitset<6>(rcv_checksum).to_string()) != checksum_str)
 	{
 		cout << "Unmatching checksums, message discarded. Starting over..." << endl;
+		Sleep(500);
 		goto read_reset;
 	}
 
