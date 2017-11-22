@@ -176,13 +176,19 @@ string DLL::interpret(DTMF_type varType)
 // Read data
 void DLL::read()
 {
-	string received_msg;				// Final received message, translated
-	string number_str = "";
-	string data_str = "";				// Temprorary string of recieved bits, without security bits
-	string checksum_str = "";
+	string received_msg;			// Final received message, translated
+	string number_str;
+	string data_str;			// Temprorary string of recieved bits, without security bits
+	string checksum_str;
 	vector<DTMF_type> received_data;	// Vector storing received bits
+	
+read_reset:
 
-read_reset:		
+	received_msg = "";				// Final received message, translated
+	number_str = "";
+	data_str = "";				// Temprorary string of recieved bits, without security bits
+	checksum_str = "";
+	received_data.clear();
 
 	while (dtmf->listen()!= DTMF_4) // Flag = DTMF_4
 	{
