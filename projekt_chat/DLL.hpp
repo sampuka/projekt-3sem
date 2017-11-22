@@ -17,7 +17,7 @@ public:
 //	void playTone();
 	int send(std::string); //should block
 	string interpret(DTMF_type);
-	string read();
+	void read();
     ~DLL();
     
 private:
@@ -25,6 +25,9 @@ private:
 	string title;
 	int time;
 	int packetNumber;
+	bool isReceiving;
+	bool isSending;
+	vector<string> receivedMessages;
 };
 
 #endif

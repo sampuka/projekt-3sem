@@ -13,21 +13,24 @@ DLL::DLL()
 {
 }
 
-
 DLL::DLL(int varTime)
 {
 	dtmf = new DTMF(varTime);
 	dtmf->startRecording();
 	
 	time = varTime;
+
 	packetNumber = 0;
+	isReceiving = false;
+	isSending = false;
 }
 
 // Send data
 int DLL::send(std::string varStr)
 {
 
-	// Packet: Header
+	// goto label
+send_reset:
 
 	// Flag: Start
 	cout << "Sending flag\t\tSTART\tDTMF_4" << endl;
@@ -115,7 +118,7 @@ int DLL::send(std::string varStr)
 	cout << endl;
 
 	// Listen for acknowledge
-	for (int i = 0; i >= 100; i++)
+	for (int i = 0; i <= 100; i++)
 	{
 		if (dtmf->listen() == DTMF_5)
 		{
@@ -124,8 +127,9 @@ int DLL::send(std::string varStr)
 		}
 		Sleep(10);
 	}
+
 	"Message not acknowledged, resending...";
-	return 0;
+	goto send_reset;
 }
 
 // Interpret DTMF_Type
@@ -170,7 +174,7 @@ string DLL::interpret(DTMF_type varType)
 }
 
 // Read data
-string DLL::read()
+void DLL::read()
 {
 	string received_msg;				// Final received message, translated
 	string number_str = "";
@@ -178,15 +182,12 @@ string DLL::read()
 	string checksum_str = "";
 	vector<DTMF_type> received_data;	// Vector storing received bits
 
-	// Wait for start flag
-	cout << endl;
-	cout << "Ready to receive..." << endl;
+read_reset:		
 
-	reset:
 	while (dtmf->listen()!= DTMF_4) // Flag = DTMF_4
 	{
-	/*	cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
-		Sleep(100);*/
+		// cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
+		// Waiting...
 	}
 
 	cout << "Hearing flag\tSTART\tDTMF_4\t (1/2)" << endl;
@@ -196,6 +197,9 @@ string DLL::read()
 	{
 		goto reset;
 	}
+
+	// Receiving flag
+	isReceiving = true;
 
 	cout << "Hearing flag\tSTART\tDTMF_4\t (2/2)" << endl;
 
@@ -256,20 +260,27 @@ string DLL::read()
 
 	if ((bitset<6>(rcv_checksum).to_string()) != checksum_str)
 	{
-		cout << "Unmatching checksums, message discarded." << endl;
-		return "Unmatching checksums, message discarded.";
+		cout << "Unmatching checksums, message discarded. Starting over..." << endl;
+		goto read_reset;
 	}
 
 	// Output message
 	cout << "Matching checksums." << endl << endl;
 	cout << "Received message:\t" << received_msg << endl;
 	
+	// Wait and send acknowledge
 	Sleep(100);
 	dtmf->play_wait(DTMF_5); // Acknowledge 0, should change
 	dtmf->play_wait(DTMF_5);
 	dtmf->play_wait(DTMF_5);
 
-	return received_msg;
+	// Add received message to message buffer
+	receivedMessages.push_back(received_msg);
+
+	// receiving flag
+	isReceiving = false;
+
+	goto read_reset;
 }
 
 DLL::~DLL()
