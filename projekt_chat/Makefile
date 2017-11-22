@@ -29,5 +29,5 @@ clean_all:
 	\rm $(OBJS) bin
 
 clean:
-	\rm DTMF.o test.o rc_fft.o RLRecorder.o DTMF_type.o
+	\rm $(OBJS)
 

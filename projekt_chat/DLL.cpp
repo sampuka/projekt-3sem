@@ -4,9 +4,27 @@
 #include <string>
 #include <bitset>
 #include <iostream>
-#include <windows.h>
 #include <sstream>
 
+#ifdef _WIN32
+#include "windows.h"
+
+void mysleep(int ms)
+{
+    Sleep(ms);
+}
+
+#else
+#include "unistd.h"
+
+void mysleep(int ms)
+{
+    const struct timespec temp = {0, ms*1000000};
+    nanosleep(&temp, NULL);
+}
+
+#endif
+	
 using namespace std;
 
 DLL::DLL()
@@ -125,7 +143,7 @@ send_reset:
 			cout << "Message acknowledged by receiver." << endl;
 			return 0;
 		}
-		Sleep(10);
+		mysleep(10);
 	}
 
 	cout << "Message not acknowledged, resending..." << endl;
@@ -197,7 +215,7 @@ read_reset:
 	}
 
 	cout << "Hearing flag\tSTART\tDTMF_4\t (1/2)" << endl;
-	Sleep(time/2);
+	mysleep(time/2);
 
 	if (dtmf->listen() != DTMF_4)
 	{
@@ -210,7 +228,7 @@ read_reset:
 	cout << "Hearing flag\tSTART\tDTMF_4\t (2/2)" << endl;
 
 	// Wait until middle of first tone
-	Sleep(time);
+	mysleep(time);
 
 	// Start recording
 	cout << "Recording started." << endl;
@@ -219,7 +237,7 @@ read_reset:
 	{
 		received_data.push_back(dtmf->listen());
 		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
-		Sleep(time);
+		mysleep(time);
 	}
 
 	cout << "Hearing flag\tSTOP\tDTMF_4" << endl;
@@ -266,7 +284,7 @@ read_reset:
 
 	if ((bitset<6>(rcv_checksum).to_string()) != checksum_str)
 	{
-		cout << "Unmatching checksums, message discarded. Starting over..." << endl;
+		cout << "Unmatching checksums, message discarded. Sytarting over..." << endl;
 		goto read_reset;
 	}
 
@@ -275,7 +293,7 @@ read_reset:
 	cout << "Received message:\t" << received_msg << endl;
 	
 	// Wait and send acknowledge
-	Sleep(100);
+	mysleep(100);
 	dtmf->play_wait(DTMF_5); // Acknowledge 0, should change
 	dtmf->play_wait(DTMF_5);
 	dtmf->play_wait(DTMF_5);
