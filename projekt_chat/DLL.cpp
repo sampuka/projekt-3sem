@@ -143,7 +143,7 @@ send_reset:
 			cout << "Message acknowledged by receiver." << endl;
 			return 0;
 		}
-		Sleep(10);
+		mysleep(10);
 	}
 
 	"Message not acknowledged, resending...";
@@ -284,7 +284,7 @@ read_reset:
 
 	if ((bitset<6>(rcv_checksum).to_string()) != checksum_str)
 	{
-		cout << "Unmatching checksums, message discarded. Starting over..." << endl;
+		cout << "Unmatching checksums, message discarded. Sytarting over..." << endl;
 		goto read_reset;
 	}
 
@@ -292,12 +292,8 @@ read_reset:
 	cout << "Matching checksums." << endl << endl;
 	cout << "Received message:\t" << received_msg << endl;
 	
-<<<<<<< HEAD
-	mysleep(100);
-=======
 	// Wait and send acknowledge
-	Sleep(100);
->>>>>>> master
+	mysleep(100);
 	dtmf->play_wait(DTMF_5); // Acknowledge 0, should change
 	dtmf->play_wait(DTMF_5);
 	dtmf->play_wait(DTMF_5);
