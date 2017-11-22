@@ -39,7 +39,7 @@ DLL::DLL(int varTime)
 	time = varTime;
 
 	sentMessages = 0;
-	receivedAcks = 1;
+	sentAcks = 1;
 
 	isReceiving = false;
 	isSending = false;
@@ -141,7 +141,7 @@ send_reset:
 	// Listen for acknowledge
 	for (int i = 0; i <= 200; i++)
 	{
-		if (dtmf->listen() == DTMF_5)
+		if (((dtmf->listen() == DTMF_5) && (packetNumber == 1)) || ((dtmf->listen() == DTMF_6) && (packetNumber == 0)))
 		{
 			cout << "Message acknowledged by receiver." << endl;
 			return 0;
@@ -203,6 +203,7 @@ void DLL::read()
 	string data_str;			// Temprorary string of recieved bits, without security bits
 	string checksum_str;
 	vector<DTMF_type> received_data;	// Vector storing received bits
+	int ackNumber;
 	
 read_reset:
 
@@ -293,14 +294,24 @@ read_reset:
 		mysleep(500);
 		goto read_reset;
 	}
-
-	// Output message
 	cout << "Matching checksums." << endl << endl;
-	cout << "Received message:\t" << received_msg << endl;
 	
+	// Numbering
+	ackNumber = (sentAcks % 2);
+	if (stoi(number_str) != ackNumber)
+	{
+		cout << "Received message:\t" << received_msg << endl;	// Output message
+		receivedMessages.push_back(received_msg);				// Add received message to message buffer
+	}
+	else 
+	{
+		sentAcks--;
+	}
+
 	// Wait and send acknowledge
 	mysleep(100);
-	int ackNumber = (sentMessages % 2);
+	ackNumber = (sentAcks % 2); // Potentially update
+
 	switch (ackNumber)
 	{
 	case 0:
@@ -316,15 +327,12 @@ read_reset:
 		dtmf->play_wait(DTMF_6);
 		break;
 	}
-
-
-
-	// Add received message to message buffer
-	receivedMessages.push_back(received_msg);
+	sentAcks++;
 
 	// receiving flag
 	isReceiving = false;
 
+	// Return to start
 	goto read_reset;
 }
 

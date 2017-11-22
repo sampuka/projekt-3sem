@@ -6,9 +6,9 @@
 int main()
 {
 	DLL myDLL(200);
-//	myDLL.read();
+	myDLL.read();
 
-//	/*
+	/*
 	while (true)
 	{
 		cout << endl;

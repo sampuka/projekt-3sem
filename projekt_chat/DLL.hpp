@@ -25,7 +25,7 @@ private:
 	string title;
 	int time;
 	int sentMessages;
-	int receivedAcks;
+	int sentAcks;
 	bool isReceiving;
 	bool isSending;
 	vector<string> receivedMessages;
