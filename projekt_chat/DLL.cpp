@@ -118,7 +118,7 @@ send_reset:
 	cout << endl;
 
 	// Listen for acknowledge
-	for (int i = 0; i <= 100; i++)
+	for (int i = 0; i <= 200; i++)
 	{
 		if (dtmf->listen() == DTMF_5)
 		{
@@ -128,7 +128,7 @@ send_reset:
 		Sleep(10);
 	}
 
-	"Message not acknowledged, resending...";
+	cout << "Message not acknowledged, resending..." << endl;
 	goto send_reset;
 }
 
