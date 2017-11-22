@@ -195,7 +195,7 @@ read_reset:
 
 	if (dtmf->listen() != DTMF_4)
 	{
-		goto reset;
+		goto read_reset;
 	}
 
 	// Receiving flag
