@@ -6,9 +6,9 @@
 int main()
 {
 	DLL myDLL(300);
-	myDLL.read();
+//	myDLL.read();
 
-/*
+///*
 	while (true)
 	{
 		cout << endl;
@@ -19,7 +19,7 @@ int main()
 
 		myDLL.send(userInput);
 	}
-*/	
+// */	
 
 	int x;
 	cin >> x;

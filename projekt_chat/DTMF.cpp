@@ -35,6 +35,13 @@ DTMF::DTMF(int toneLength)
 		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][0] * i * sampleInterval))+
 		SAMPLE_AMPLITUDE/2*sin((2*M_PI * sampleFreqs[j][1] * i * sampleInterval))
 					 ));
+///*
+	for(int i = 0; i < 1000; i++)
+	{
+	    sampleArray[j][SAMPLES_PER_BUFFER-1000+i] *= (1-(0.001*i));
+	    sampleArray[j][i] *= (0.001*i);
+	}
+//*/
     }
 
 /*

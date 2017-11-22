@@ -1,6 +1,8 @@
 #ifndef DTMF_TYPES_H
 #define DTMF_TYPES_H
 
+#include <iostream>
+
 // Number of samples for a buffer
 #define SAMPLES_PER_BUFFER 50000
 
@@ -62,5 +64,7 @@ enum DTMF_type
     DTMF_D,
     DTMF_UNKNOWN //Needs a non-value
 };
+
+std::ostream& operator<< (std::ostream& os, const DTMF_type& dtmf);
 
 #endif

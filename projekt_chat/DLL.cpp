@@ -4,9 +4,27 @@
 #include <string>
 #include <bitset>
 #include <iostream>
-#include <windows.h>
 #include <sstream>
 
+#ifdef _WIN32
+#include "windows.h"
+
+void mysleep(int ms)
+{
+    Sleep(ms);
+}
+
+#else
+#include "unistd.h"
+
+void mysleep(int ms)
+{
+    const struct timespec temp = {0, ms*1000000};
+    nanosleep(&temp, NULL);
+}
+
+#endif
+	
 using namespace std;
 
 DLL::DLL()
@@ -176,7 +194,7 @@ string DLL::read()
 	}
 
 	cout << "Hearing flag\tSTART\tDTMF_4\t (1/2)" << endl;
-	Sleep(time/2);
+	mysleep(time/2);
 
 	if (dtmf->listen() != DTMF_4)
 	{
@@ -186,7 +204,7 @@ string DLL::read()
 	cout << "Hearing flag\tSTART\tDTMF_4\t (2/2)" << endl;
 
 	// Wait until middle of first tone
-	Sleep(time);
+	mysleep(time);
 
 	// Start recording
 	cout << "Recording started." << endl;
@@ -195,7 +213,7 @@ string DLL::read()
 	{
 		received_data.push_back(dtmf->listen());
 		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
-		Sleep(time);
+		mysleep(time);
 	}
 
 	cout << "Hearing flag\tSTOP\tDTMF_4" << endl;
@@ -250,7 +268,7 @@ string DLL::read()
 	cout << "Matching checksums." << endl << endl;
 	cout << "Received message:\t" << received_msg << endl;
 	
-	Sleep(100);
+	mysleep(100);
 	dtmf->play_wait(DTMF_5); // Acknowledge 0, should change
 	dtmf->play_wait(DTMF_5);
 	dtmf->play_wait(DTMF_5);
