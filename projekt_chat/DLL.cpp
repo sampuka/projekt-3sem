@@ -33,16 +33,20 @@ DLL::DLL()
 
 DLL::DLL(int varTime)
 {
-	dtmf = new DTMF(varTime);
-	dtmf->startRecording();
+	// Establish DTMF instance , tone-length = varTime
+	dtmf = new DTMF(varTime);		
+	dtmf->startRecording();			
 	
-	time = varTime;
+	// Establish variable 'time' for later use
+	time = varTime;					
 
-	sentMessages = 0;
-	sentAcks = 1;
+	// Counter for sent messages and acknowledges
+	sentMessages = 0;				
+	sentAcks = 1;					
 
-	isReceiving = false;
-	isSending = false;
+	// Initiate flags for sending and receiving
+	isReceiving = false;			
+	isSending = false;				
 }
 
 // Send data
@@ -51,16 +55,15 @@ int DLL::send(std::string varStr)
 	// Flag: Sending
 	isSending = true;
 
-	// goto label
+	// Label for reset
 send_reset:
 
-	// Flag: Start
+	// Send START flag: DTMF_4
 	cout << "Sending flag\t\tSTART\tDTMF_4" << endl;
 	dtmf->play_wait(DTMF_4);
 
+	// Calculate and send packet number
 	int packetNumber = (sentMessages % 2);
-
-	// Packet number
 	switch(packetNumber)
 	{
 	case 0:
@@ -74,7 +77,7 @@ send_reset:
 	}
 	sentMessages++;
 
-	// Packet: Data
+	// Send data two bits at a time
 	for (std::size_t i = 0; i < varStr.size(); i++)
 	{
 		for (int indeks = 0; indeks <= 8; indeks += 2)
@@ -104,7 +107,7 @@ send_reset:
 		}
 	}
 
-	// Packet secure
+	// Calculate and send security bits
 	int varSecure = 0;
 	for (std::size_t i = 0; i < varStr.size(); i++)
 	{
@@ -135,7 +138,7 @@ send_reset:
 		}
 	}
 
-	// Flag: Stop
+	// Send STOP flag: DTMF_D
 	cout << "Sending flag\t\tSTOP\tDTMF_D" << endl;
 	dtmf->play_wait(DTMF_D);
 	cout << endl;
@@ -152,6 +155,7 @@ send_reset:
 		mysleep(10);
 	}
 
+	// Reset if none is received
 	cout << "Message not acknowledged, resending..." << endl << endl;
 	sentMessages--;
 	goto send_reset;
@@ -216,53 +220,50 @@ read_reset:								// Location for reset
 	checksum_str = "";
 	received_data.clear();
 
+	// Stuck in loop; wait for start
 	while (dtmf->listen()!= DTMF_4)		// Flag = DTMF_4
 	{
 		//cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
 		// Waiting...
 	}
-
 	cout << "Hearing flag\tSTART\tDTMF_4\t (1/2)" << endl;
+	
+	// Wait half a tone, check if tone is still START flag
 	mysleep(time/2);
-
 	if (dtmf->listen() != DTMF_4)
 	{
 		goto read_reset;
 	}
 
-	// Receiving flag
+	// Receive started; set flag
 	isReceiving = true;
-
 	cout << "Hearing flag\tSTART\tDTMF_4\t (2/2)" << endl;
 
 	// Wait until middle of first tone
 	mysleep(time);
 
-	// Start recording
+	// Start recording to received_data
 	cout << "Recording started." << endl;
-
 	while (dtmf->listen() != DTMF_D)	// Record while flag is not STOP
 	{
 		received_data.push_back(dtmf->listen());
 		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
 		mysleep(time);
 	}
-
 	cout << "Hearing flag\tSTOP\tDTMF_4" << endl;
-
 	cout << "Recording ended." << endl;
 
-	// Interpret received message
+	// Convert message to characters -> string
 	for (int i = 0; i < 1; i++)
 	{
 		number_str += interpret(received_data[i]);
 	}
-
+	
 	for (unsigned int i = 1; i < (received_data.size() - 3); i++)
 	{
 		data_str += interpret(received_data[i]);
 	}
-
+	
 	for (unsigned int i = (received_data.size() - 3); i < received_data.size(); i++)
 	{
 		checksum_str += interpret(received_data[i]);
@@ -281,7 +282,7 @@ read_reset:								// Location for reset
 		received_msg += char(bits.to_ulong());
 	}
 	
-	// Checksum match
+	// Check for checksum match, reset if negative
 	int rcv_checksum = 0;
 	for (std::size_t i = 0; i < received_msg.size(); i++)
 	{
@@ -299,7 +300,7 @@ read_reset:								// Location for reset
 	}
 	cout << "Matching checksums." << endl << endl;
 	
-	// Numbering
+	// Check for numbering, gem besked i reveivedMessages.
 	ackNumber = (sentAcks % 2);
 	if (stoi(number_str) != ackNumber)
 	{
@@ -311,9 +312,9 @@ read_reset:								// Location for reset
 		sentAcks--;
 	}
 
-	// Wait and send acknowledge
+	// Wait and send acknowledge with numbering
 	mysleep(100);
-	ackNumber = (sentAcks % 2); // Potentially update
+	ackNumber = (sentAcks % 2); 
 
 	switch (ackNumber)
 	{
@@ -332,7 +333,7 @@ read_reset:								// Location for reset
 	}
 	sentAcks++;
 
-	// receiving flag
+	// Clear receiving flag
 	isReceiving = false;
 
 	// Return to start
