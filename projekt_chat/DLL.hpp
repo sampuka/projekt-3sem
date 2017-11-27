@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-
+#include <thread>
 
 using namespace std;
 
@@ -17,10 +17,12 @@ public:
 //	void playTone();
 	int send(std::string); //should block
 	string interpret(DTMF_type);
-	void read();
+	void beginRead();
     ~DLL();
     
 private:
+	void read();
+	thread* read_thread;
     DTMF* dtmf;
 	string title;
 	int time;

@@ -1,10 +1,11 @@
 #include "DLL.hpp"
-#include "DTMF.hpp"
+
 #include <vector>
 #include <string>
 #include <bitset>
 #include <iostream>
 #include <sstream>
+#include <thread>
 
 #ifdef _WIN32
 #include "windows.h"
@@ -52,6 +53,11 @@ DLL::DLL(int varTime)
 // Send data
 int DLL::send(std::string varStr)
 {
+	if (isSending || isReceiving)
+	{
+		cout << "Transmission in progress. Please wait..." << endl;
+		return 0;
+	}
 	// Flag: Sending
 	isSending = true;
 
@@ -202,6 +208,11 @@ string DLL::interpret(DTMF_type varType)
 		return "??";
 }
 
+void DLL::beginRead()
+{
+	read_thread = new thread(&DLL::read, this);
+}
+
 // Read data
 void DLL::read()
 {
@@ -214,6 +225,7 @@ void DLL::read()
 	
 read_reset:								// Location for reset
 
+	// Clear variables upon start/reset
 	received_msg = "";				
 	number_str = "";
 	data_str = "";				
@@ -221,7 +233,7 @@ read_reset:								// Location for reset
 	received_data.clear();
 
 	// Stuck in loop; wait for start
-	while (dtmf->listen()!= DTMF_4)		// Flag = DTMF_4
+	while ((dtmf->listen() != DTMF_4) || isSending)		// Flag = DTMF_4
 	{
 		//cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
 		// Waiting...
