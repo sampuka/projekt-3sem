@@ -48,6 +48,8 @@ DLL::DLL(int varTime)
 // Send data
 int DLL::send(std::string varStr)
 {
+	// Flag: Sending
+	isSending = true;
 
 	// goto label
 send_reset:
@@ -134,8 +136,8 @@ send_reset:
 	}
 
 	// Flag: Stop
-	cout << "Sending flag\t\tSTOP\tDTMF_4" << endl;
-	dtmf->play_wait(DTMF_4);
+	cout << "Sending flag\t\tSTOP\tDTMF_D" << endl;
+	dtmf->play_wait(DTMF_D);
 	cout << endl;
 
 	// Listen for acknowledge
@@ -144,6 +146,7 @@ send_reset:
 		if (((dtmf->listen() == DTMF_5) && (packetNumber == 1)) || ((dtmf->listen() == DTMF_6) && (packetNumber == 0)))
 		{
 			cout << "Message acknowledged by receiver." << endl;
+			isSending = false;
 			return 0;
 		}
 		mysleep(10);
@@ -198,14 +201,14 @@ string DLL::interpret(DTMF_type varType)
 // Read data
 void DLL::read()
 {
-	string received_msg;			// Final received message, translated
+	string received_msg;				// Final received message, translated
 	string number_str;
-	string data_str;			// Temprorary string of recieved bits, without security bits
+	string data_str;					// Temprorary string of recieved bits, without security bits
 	string checksum_str;
 	vector<DTMF_type> received_data;	// Vector storing received bits
 	int ackNumber;
 	
-read_reset:
+read_reset:								// Location for reset
 
 	received_msg = "";				
 	number_str = "";
@@ -213,7 +216,7 @@ read_reset:
 	checksum_str = "";
 	received_data.clear();
 
-	while (dtmf->listen()!= DTMF_4) // Flag = DTMF_4
+	while (dtmf->listen()!= DTMF_4)		// Flag = DTMF_4
 	{
 		//cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
 		// Waiting...
@@ -238,7 +241,7 @@ read_reset:
 	// Start recording
 	cout << "Recording started." << endl;
 
-	while (dtmf->listen() != DTMF_4)
+	while (dtmf->listen() != DTMF_D)	// Record while flag is not STOP
 	{
 		received_data.push_back(dtmf->listen());
 		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
@@ -291,7 +294,7 @@ read_reset:
 	if ((bitset<6>(rcv_checksum).to_string()) != checksum_str)
 	{
 		cout << "Unmatching checksums, message discarded. Starting over..." << endl;
-		mysleep(500);
+		//mysleep(500);
 		goto read_reset;
 	}
 	cout << "Matching checksums." << endl << endl;
@@ -316,13 +319,13 @@ read_reset:
 	{
 	case 0:
 		cout << "Sending acknowledge\tACK0" << endl;
-		dtmf->play_wait(DTMF_5); // Acknowledge 0, should change
+		dtmf->play_wait(DTMF_5); 
 		dtmf->play_wait(DTMF_5);
 		dtmf->play_wait(DTMF_5);
 		break;
 	case 1:
 		cout << "Sending acknowledge\tACK1" << endl;
-		dtmf->play_wait(DTMF_6); // Acknowledge 0, should change
+		dtmf->play_wait(DTMF_6); 
 		dtmf->play_wait(DTMF_6);
 		dtmf->play_wait(DTMF_6);
 		break;
