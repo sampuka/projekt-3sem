@@ -8,13 +8,15 @@ int main()
 	DLL myDLL(300);
 //	myDLL.read();
 
-	/*
+	/*	
 	while (true)
 	{
 		cout << endl;
 		cout << "Enter your message:" << endl;
 		string userInput;
-		cin >> userInput;
+
+		getline(cin, userInput);
+
 		cout << endl;
 
 		myDLL.send(userInput);

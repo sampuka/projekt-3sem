@@ -300,7 +300,7 @@ read_reset:								// Location for reset
 	}
 	cout << "Matching checksums." << endl << endl;
 	
-	// Check for numbering, gem besked i reveivedMessages.
+	// Check for numbering, save message in receivedMessages.
 	ackNumber = (sentAcks % 2);
 	if (stoi(number_str) != ackNumber)
 	{
