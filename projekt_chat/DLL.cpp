@@ -26,6 +26,15 @@ void mysleep(int ms)
 
 #endif
 	
+#define DATA_00 DTMF_9
+#define DATA_01 DTMF_C
+#define DATA_10 DTMF_HASH
+#define DATA_11 DTMF_D
+#define DATA_ACK0 DTMF_6
+#define DATA_ACK1 DTMF_B
+#define DATA_START DTMF_8
+#define DATA_STOP DTMF_0
+
 using namespace std;
 
 DLL::DLL()
@@ -47,138 +56,21 @@ DLL::DLL(int varTime)
 
 	// Initiate flags for sending and receiving
 	isReceiving = false;			
-	isSending = false;				
-}
-
-// Send data
-int DLL::send(std::string varStr)
-{
-	if (isSending || isReceiving)
-	{
-		cout << "Transmission in progress. Please wait..." << endl;
-		return 0;
-	}
-	// Flag: Sending
-	isSending = true;
-
-	// Label for reset
-send_reset:
-
-	// Send START flag: DTMF_4
-	cout << "Sending flag\t\tSTART\tDTMF_4" << endl;
-	dtmf->play_wait(DTMF_4);
-
-	// Calculate and send packet number
-	int packetNumber = (sentMessages % 2);
-	switch(packetNumber)
-	{
-	case 0:
-		cout << "Sending packet number\t00\tDTMF_2" << endl;
-		dtmf->play_wait(DTMF_1);
-		break;
-	case 1:
-		cout << "Sending packet number\t01\tDTMF_2" << endl;
-		dtmf->play_wait(DTMF_2);
-		break;
-	}
-	sentMessages++;
-
-	// Send data two bits at a time
-	for (std::size_t i = 0; i < varStr.size(); i++)
-	{
-		for (int indeks = 0; indeks <= 8; indeks += 2)
-		{
-			string caseVar = (bitset<8>(varStr[i]).to_string()).substr(indeks, 2);
-
-			if (caseVar == "00")
-			{
-				cout << "Sending data nibble\t00\tDTMF_1" << endl;
-				dtmf->play_wait(DTMF_1);
-			}
-			else if (caseVar == "01")
-			{
-				cout << "Sending data nibble\t01\tDTMF_2" << endl;
-				dtmf->play_wait(DTMF_2);
-			}
-			else if (caseVar == "10")
-			{
-				cout << "Sending data nibble\t10\tDTMF_3" << endl;
-				dtmf->play_wait(DTMF_3);
-			}
-			else if (caseVar == "11")
-			{
-				cout << "Sending data nibble\t11\tDTMF_A" << endl;
-				dtmf->play_wait(DTMF_A);
-			}
-		}
-	}
-
-	// Calculate and send security bits
-	int varSecure = 0;
-	for (std::size_t i = 0; i < varStr.size(); i++)
-	{
-		varSecure += varStr[i];
-	}
-	for (int indeks = 0; indeks <= 6; indeks += 2)
-	{
-		string switchSecure = (bitset<6>(varSecure).to_string()).substr(indeks, 2);
-		if (switchSecure == "00")
-		{
-			cout << "Sending security nibble\t00\tDTMF_1" << endl;
-			dtmf->play_wait(DTMF_1);
-		}
-		else if (switchSecure == "01")
-		{
-			cout << "Sending security nibble\t01\tDTMF_2" << endl;
-			dtmf->play_wait(DTMF_2);
-		}
-		else if (switchSecure == "10")
-		{
-			cout << "Sending security nibble\t10\tDTMF_3" << endl;
-			dtmf->play_wait(DTMF_3);
-		}
-		else if (switchSecure == "11")
-		{
-			cout << "Sending security nibble\t11\tDTMF_A" << endl;
-			dtmf->play_wait(DTMF_A);
-		}
-	}
-
-	// Send STOP flag: DTMF_D
-	cout << "Sending flag\t\tSTOP\tDTMF_D" << endl;
-	dtmf->play_wait(DTMF_D);
-	cout << endl;
-
-	// Listen for acknowledge
-	for (int i = 0; i <= 200; i++)
-	{
-		if (((dtmf->listen() == DTMF_5) && (packetNumber == 1)) || ((dtmf->listen() == DTMF_6) && (packetNumber == 0)))
-		{
-			cout << "Message acknowledged by receiver." << endl;
-			isSending = false;
-			return 0;
-		}
-		mysleep(10);
-	}
-
-	// Reset if none is received
-	cout << "Message not acknowledged, resending..." << endl << endl;
-	sentMessages--;
-	goto send_reset;
+	isSending = false;			
 }
 
 // Interpret DTMF_Type
 string DLL::interpret(DTMF_type varType)
 {
-	if (varType == DTMF_1)
+	if (varType == DATA_00)
 		return "00";
-	else if (varType == DTMF_2)
+	else if (varType == DATA_01)
 		return "01";
-	else if (varType == DTMF_3)
+	else if (varType == DATA_10)
 		return "10";
-	else if (varType == DTMF_A)
+	else if (varType == DATA_11)
 		return "11";
-	else if (varType == DTMF_4)
+/*	else if (varType == DTMF_4)
 		return "44";
 	else if (varType == DTMF_5)
 		return "55";
@@ -203,14 +95,129 @@ string DLL::interpret(DTMF_type varType)
 	else if (varType == DTMF_D)
 		return "DD";
 	else if (varType == DTMF_UNKNOWN)
-		return "??";
+		return "??";*/
 	else
 		return "??";
 }
 
-void DLL::beginRead()
+// Send data
+int DLL::send(std::string varStr)
 {
-	read_thread = new thread(&DLL::read, this);
+	if (isSending || isReceiving)
+	{
+		cout << "Transmission in progress. Please wait..." << endl;
+		return 0;
+	}
+
+	// Flag: Sending
+	isSending = true;
+
+	// Label for reset
+send_reset:
+
+	// Send START flag
+	cout << "Sending flag\t\tSTART" << endl;
+	dtmf->play_wait(DATA_START);
+
+	// Calculate and send packet number
+	int packetNumber = (sentMessages % 2);
+	cout << "Sending packet number\t0" << packetNumber << endl;
+	switch(packetNumber)
+	{
+	case 0:
+		dtmf->play_wait(DATA_00);
+		break;
+	case 1:
+		dtmf->play_wait(DATA_01);
+		break;
+	}
+	sentMessages++;
+
+	// Send data two bits at a time (can be made better?)
+	for (std::size_t i = 0; i < varStr.size(); i++)
+	{
+		for (int indeks = 0; indeks < 8; indeks += 2)
+		{
+			
+			string caseVar = (bitset<8>(varStr[i]).to_string()).substr(indeks, 2);
+			cout << "Sending data nibble\t" << caseVar << endl;
+			if (caseVar == "00")
+			{
+				dtmf->play_wait(DATA_00);
+			}
+			else if (caseVar == "01")
+			{
+				dtmf->play_wait(DATA_01);
+			}
+			else if (caseVar == "10")
+			{
+				dtmf->play_wait(DATA_10);
+			}
+			else if (caseVar == "11")
+			{
+				dtmf->play_wait(DATA_11);
+			}
+		}
+	}
+
+	// Calculate and send security bits
+	int checksum = 0;
+	for (int i = 0; i < varStr.size(); i++)
+	{
+		checksum += varStr[i];
+	}
+
+	while (checksum > 255)
+	{
+		int lsb = checksum & 0b11111111;
+		int msb = checksum >> 8;
+		checksum = msb + lsb;
+	}
+
+
+	for (int indeks = 0; indeks < 8; indeks += 2)
+	{
+		string switchSecure = (bitset<8>(checksum).to_string()).substr(indeks, 2);
+		cout << "Sending security nibble\t" << switchSecure << endl;
+		if (switchSecure == "00")
+		{
+			dtmf->play_wait(DATA_00);
+		}
+		else if (switchSecure == "01")
+		{
+			dtmf->play_wait(DATA_01);
+		}
+		else if (switchSecure == "10")
+		{
+			dtmf->play_wait(DATA_10);
+		}
+		else if (switchSecure == "11")
+		{
+			dtmf->play_wait(DATA_11);
+		}
+	}
+
+	// Send STOP flag
+	cout << "Sending flag\t\tSTOP" << endl;
+	dtmf->play_wait(DATA_STOP);
+	cout << endl;
+
+	// Listen for acknowledge
+	for (int i = 0; i <= 200; i++)
+	{
+		if (((dtmf->listen() == DATA_ACK0) && (packetNumber == 1)) || ((dtmf->listen() == DATA_ACK1) && (packetNumber == 0)))
+		{
+			cout << "Message acknowledged by receiver." << endl;
+			isSending = false;
+			return 0;
+		}
+		mysleep(10);
+	}
+
+	// Reset if none is received
+	cout << "Message not acknowledged, resending..." << endl << endl;
+	sentMessages--;
+	goto send_reset;
 }
 
 // Read data
@@ -233,63 +240,65 @@ read_reset:								// Location for reset
 	received_data.clear();
 
 	// Stuck in loop; wait for start
-	while ((dtmf->listen() != DTMF_4) || isSending)		// Flag = DTMF_4
+	while ((dtmf->listen() != DATA_START) || isSending)		// Flag = start
 	{
-		//cout << "Hearing\t" << interpret(dtmf->listen()) << endl;
-		// Waiting...
+		// Busy waiting...
 	}
-	cout << "Hearing flag\tSTART\tDTMF_4\t (1/2)" << endl;
+
+	cout << "Hearing flag\tSTART\t(1/2)" << endl;
 	
 	// Wait half a tone, check if tone is still START flag
 	mysleep(time/2);
-	if (dtmf->listen() != DTMF_4)
+	if (dtmf->listen() != DATA_START)
 	{
 		goto read_reset;
 	}
 
 	// Receive started; set flag
 	isReceiving = true;
-	cout << "Hearing flag\tSTART\tDTMF_4\t (2/2)" << endl;
+	cout << "Hearing flag\tSTART\t(2/2)" << endl;
 
 	// Wait until middle of first tone
 	mysleep(time);
 
 	// Start recording to received_data
 	cout << "Recording started." << endl;
-	while (dtmf->listen() != DTMF_D)	// Record while flag is not STOP
+	while (dtmf->listen() != DATA_STOP)	// Record while flag is not STOP
 	{
 		received_data.push_back(dtmf->listen());
 		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
 		mysleep(time);
 	}
-	cout << "Hearing flag\tSTOP\tDTMF_4" << endl;
-	cout << "Recording ended." << endl;
+	cout << "Hearing flag\tSTOP" << endl;
+	cout << "Recording ended." << endl << endl;;
 
-	// Convert message to characters -> string
+	// Interpret data message
 	for (int i = 0; i < 1; i++)
 	{
 		number_str += interpret(received_data[i]);
 	}
 	
+	// Interpret numbering
 	for (unsigned int i = 1; i < (received_data.size() - 3); i++)
 	{
 		data_str += interpret(received_data[i]);
 	}
 	
-	for (unsigned int i = (received_data.size() - 3); i < received_data.size(); i++)
+	// Interpret checksum (***FIX)
+	for (unsigned int i = (received_data.size() - 4); i < received_data.size(); i++)
 	{
 		checksum_str += interpret(received_data[i]);
 	}
 
-	cout << endl;
-	cout << "Received number:\t" << number_str << endl << endl;
+	// Output
+	cout << "Received number:\t" << number_str << endl;
 	cout << "Received checksum:\t" << checksum_str << endl;
 
 	stringstream sstream(data_str);
 
 	while (sstream.good())
 	{
-		std::bitset<8> bits;
+		bitset<8> bits;
 		sstream >> bits;
 		received_msg += char(bits.to_ulong());
 	}
@@ -301,13 +310,19 @@ read_reset:								// Location for reset
 		rcv_checksum += received_msg[i];
 	}
 
-	cout << "Calculated checksum:\t" << (bitset<6>(rcv_checksum).to_string()) << endl;
+	while (rcv_checksum > 255)
+	{
+		int lsb = rcv_checksum & 0b11111111;
+		int msb = rcv_checksum >> 8;
+		rcv_checksum = lsb + msb;
+	}
+
+	cout << "Calculated checksum:\t" << (bitset<8>(rcv_checksum).to_string()) << endl;
 	cout << endl;
 
-	if ((bitset<6>(rcv_checksum).to_string()) != checksum_str)
+	if ((bitset<8>(rcv_checksum).to_string()) != checksum_str)
 	{
 		cout << "Unmatching checksums, message discarded. Starting over..." << endl;
-		//mysleep(500);
 		goto read_reset;
 	}
 	cout << "Matching checksums." << endl << endl;
@@ -332,15 +347,15 @@ read_reset:								// Location for reset
 	{
 	case 0:
 		cout << "Sending acknowledge\tACK0" << endl;
-		dtmf->play_wait(DTMF_5); 
-		dtmf->play_wait(DTMF_5);
-		dtmf->play_wait(DTMF_5);
+		dtmf->play_wait(DATA_ACK0);
+		dtmf->play_wait(DATA_ACK0);
+		dtmf->play_wait(DATA_ACK0);
 		break;
 	case 1:
 		cout << "Sending acknowledge\tACK1" << endl;
-		dtmf->play_wait(DTMF_6); 
-		dtmf->play_wait(DTMF_6);
-		dtmf->play_wait(DTMF_6);
+		dtmf->play_wait(DATA_ACK1);
+		dtmf->play_wait(DATA_ACK1);
+		dtmf->play_wait(DATA_ACK1);
 		break;
 	}
 	sentAcks++;
@@ -350,6 +365,12 @@ read_reset:								// Location for reset
 
 	// Return to start
 	goto read_reset;
+}
+
+// Begin read() as its own thread
+void DLL::beginRead()
+{
+	read_thread = new thread(&DLL::read, this);
 }
 
 DLL::~DLL()

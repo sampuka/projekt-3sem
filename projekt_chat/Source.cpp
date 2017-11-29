@@ -6,14 +6,9 @@
 #include <thread>
 #include <mutex>
 
-void test(string t)
-{
-	cout << t << endl;
-}
-
 int main()
 {
-	DLL myDLL(300);
+	DLL myDLL(100);
 	
 	myDLL.beginRead();
 
