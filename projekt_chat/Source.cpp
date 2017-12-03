@@ -8,6 +8,8 @@ int main()
 	DLL myDLL(200);
 	myDLL.read();
 
+	while (1)
+	    ;
 	/*
 	while (true)
 	{
