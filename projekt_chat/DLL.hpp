@@ -18,6 +18,7 @@ public:
 	int send(std::string); //should block
 	string interpret(DTMF_type);
 	void beginRead();
+	void debugOutput(string);
     ~DLL();
     
 private:

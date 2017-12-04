@@ -1,5 +1,6 @@
 #include "DLL.hpp"
 #include "DTMF.hpp"
+#include "APP.hpp"
 
 #include <iostream>
 #include <random>
@@ -8,7 +9,7 @@
 
 int main()
 {
-	DLL myDLL(100);
+/*	DLL myDLL(100);
 	
 	myDLL.beginRead();
 
@@ -23,8 +24,11 @@ int main()
 		cout << endl;
 
 		myDLL.send(userInput);
-	}
+	}*/
 	
+	APP myChat;
+
+	myChat.start();
 
 	int x;
 	cin >> x;
