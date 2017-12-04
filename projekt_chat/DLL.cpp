@@ -240,7 +240,7 @@ read_reset:								// Location for reset
 	received_data.clear();
 
 	// Stuck in loop; wait for start
-	while ((dtmf->listen() != DATA_START) || isSending)		// Flag = start
+	while ((dtmf->listen() != DATA_START) || isSending)
 	{
 		//cout << interpret(dtmf->listen()) << endl;
 		// Busy waiting...
@@ -269,11 +269,13 @@ read_reset:								// Location for reset
 
 	while (dtmf->listen() != DATA_STOP)	// Record while flag is not STOP
 	{	
-		DTMF_type sample[3];
+		DTMF_type sample[3] ;
 		sample[0] = dtmf->listen();
 		mysleep(0.25*time);
+
 		sample[1] = dtmf->listen();
 		mysleep(0.25*time);
+
 		sample[2] = dtmf->listen();
 
 		// Tale three listen samples
@@ -293,7 +295,7 @@ read_reset:								// Location for reset
 		{
 			received_data.push_back(DTMF_UNKNOWN);
 		}
-		else for (int i; i < 3; i++)
+		else for (int i = 0; i < 3; i++)
 		{
 			if (sample[i] != DTMF_UNKNOWN)
 			{

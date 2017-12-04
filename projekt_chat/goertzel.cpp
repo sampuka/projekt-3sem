@@ -2,6 +2,9 @@
 //https://stackoverflow.com/questions/11579367/implementation-of-goertzel-algorithm-in-c
 
 #include "goertzel.hpp"
+
+// Windows autism
+#define _USE_MATH_DEFINES
 #include "math.h"
 
 float goertzel_mag(int numSamples,int TARGET_FREQUENCY,int SAMPLING_RATE, float* data)

@@ -8,6 +8,10 @@
 
 #define SAMPLE_INTERVAL 25.0 //ms
 
+// Windows autism
+#define _USE_MATH_DEFINES
+#include "math.h"
+
 using namespace std;
 
 void print_CArray(const CArray vec)
