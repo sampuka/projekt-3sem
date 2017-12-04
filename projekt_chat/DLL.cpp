@@ -221,6 +221,7 @@ send_reset:
 	if (resendCount > 2)
 	{
 		debugOutput("Resend maximum reached. Message not delivered.");
+		isSending = false;
 		return 0;
 	}
 
@@ -433,6 +434,14 @@ void DLL::debugOutput(string _output)
 	{
 		cout << _output << endl;
 	}
+}
+
+string DLL::getMsg()
+{
+
+	string msg = receivedMessages[0];
+	receivedMessages.erase(receivedMessages.begin());
+	return msg;
 }
 
 DLL::~DLL()

@@ -19,6 +19,7 @@ public:
 	string interpret(DTMF_type);
 	void beginRead();
 	void debugOutput(string);
+	string getMsg();
     ~DLL();
     
 private:
