@@ -12,7 +12,6 @@ int main()
 	
 	myDLL.beginRead();
 
-	
 	while (true)
 	{
 		cout << endl;

@@ -10,6 +10,8 @@
 #define _USE_MATH_DEFINES
 #include "math.h"
 
+//#define FS 100000 //Make sure it's the same as in RLRecorder.cpp
+
 using namespace std;
 
 DTMF::DTMF()
@@ -101,7 +103,7 @@ void DTMF::startRecording()
 	cout << "choosing mic: " << recorder->getDefaultDevice() << endl;
     }
     //cout << "mic available" << endl;
-    recorder->start(50000);
+    recorder->start(FS);
 }
 
 DTMF_type DTMF::listen()
