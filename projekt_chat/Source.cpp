@@ -2,26 +2,29 @@
 #include "DTMF.hpp"
 
 #include <iostream>
+#include <random>
+#include <thread>
+#include <mutex>
 
 int main()
 {
-	DLL myDLL(200);
-	myDLL.read();
+	DLL myDLL(100);
+	
+	myDLL.beginRead();
 
-	while (1)
-	    ;
-	/*
 	while (true)
 	{
 		cout << endl;
 		cout << "Enter your message:" << endl;
 		string userInput;
-		cin >> userInput;
+
+		getline(cin, userInput);
+
 		cout << endl;
 
 		myDLL.send(userInput);
 	}
-// */	
+	
 
 	int x;
 	cin >> x;
