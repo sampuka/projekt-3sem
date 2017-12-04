@@ -11,6 +11,7 @@
 
 /sfml_test/.vs/projekt_chat/v15
 /projekt_chat/bin
+/projekt_chat/APP.o
 /projekt_chat/DLL.o
 /projekt_chat/DTMF.o
 /projekt_chat/DTMF_type.o
