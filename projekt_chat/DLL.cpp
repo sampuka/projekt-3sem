@@ -242,6 +242,7 @@ read_reset:								// Location for reset
 	// Stuck in loop; wait for start
 	while ((dtmf->listen() != DATA_START) || isSending)		// Flag = start
 	{
+		//cout << interpret(dtmf->listen()) << endl;
 		// Busy waiting...
 	}
 
@@ -259,32 +260,72 @@ read_reset:								// Location for reset
 	cout << "Hearing flag\tSTART\t(2/2)" << endl;
 
 	// Wait until middle of first tone
-	mysleep(time);
+	//mysleep(time);
+	mysleep(0.75*time);
 
 	// Start recording to received_data
+
 	cout << "Recording started." << endl;
+
 	while (dtmf->listen() != DATA_STOP)	// Record while flag is not STOP
-	{
-		received_data.push_back(dtmf->listen());
+	{	
+		DTMF_type sample[3];
+		sample[0] = dtmf->listen();
+		mysleep(0.25*time);
+		sample[1] = dtmf->listen();
+		mysleep(0.25*time);
+		sample[2] = dtmf->listen();
+
+		// Tale three listen samples
+		if ((sample[0] == sample[1]) && (sample[0] != DTMF_UNKNOWN))
+		{
+			received_data.push_back(sample[0]);
+		}
+		else if ((sample[0] == sample[2]) && (sample[0] != DTMF_UNKNOWN))
+		{
+			received_data.push_back(sample[0]);
+		}
+		else if ((sample[1] == sample[2]) && (sample[1] != DTMF_UNKNOWN))
+		{
+			received_data.push_back(sample[1]);
+		}
+		else if ((sample[0] == DTMF_UNKNOWN) && (sample[1] == DTMF_UNKNOWN) && (sample[2] == DTMF_UNKNOWN))
+		{
+			received_data.push_back(DTMF_UNKNOWN);
+		}
+		else for (int i; i < 3; i++)
+		{
+			if (sample[i] != DTMF_UNKNOWN)
+			{
+				received_data.push_back(sample[i]);
+				break;
+			}
+		}
+
+		cout << "Hearing\t" << interpret(received_data[(received_data.size()) - 1]) << endl;
+		mysleep(0.5*time);
+
+		/*received_data.push_back(dtmf->listen());
 		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
-		mysleep(time);
+		mysleep(time);*/
 	}
+	
 	cout << "Hearing flag\tSTOP" << endl;
 	cout << "Recording ended." << endl << endl;;
 
-	// Interpret data message
+	// Interpret numbering
 	for (int i = 0; i < 1; i++)
 	{
 		number_str += interpret(received_data[i]);
 	}
 	
-	// Interpret numbering
-	for (unsigned int i = 1; i < (received_data.size() - 3); i++)
+	// Interpret data message
+	for (unsigned int i = 1; i < (received_data.size() - 4); i++)
 	{
 		data_str += interpret(received_data[i]);
 	}
 	
-	// Interpret checksum (***FIX)
+	// Interpret checksum 
 	for (unsigned int i = (received_data.size() - 4); i < received_data.size(); i++)
 	{
 		checksum_str += interpret(received_data[i]);
@@ -305,7 +346,7 @@ read_reset:								// Location for reset
 	
 	// Check for checksum match, reset if negative
 	int rcv_checksum = 0;
-	for (std::size_t i = 0; i < received_msg.size(); i++)
+	for (int i = 0; i < received_msg.size(); i++)
 	{
 		rcv_checksum += received_msg[i];
 	}
@@ -314,7 +355,7 @@ read_reset:								// Location for reset
 	{
 		int lsb = rcv_checksum & 0b11111111;
 		int msb = rcv_checksum >> 8;
-		rcv_checksum = lsb + msb;
+		rcv_checksum = msb + lsb;
 	}
 
 	cout << "Calculated checksum:\t" << (bitset<8>(rcv_checksum).to_string()) << endl;
