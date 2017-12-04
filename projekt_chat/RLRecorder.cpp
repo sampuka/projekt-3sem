@@ -3,7 +3,7 @@
 #include <bitset>
 #include <SFML/Audio.hpp>
 #include "RLRecorder.hpp"
-#include "rc_fft.hpp"
+//#include "rc_fft.hpp"
 #include "goertzel.hpp"
 
 #define SAMPLE_INTERVAL 25.0 //ms
@@ -35,7 +35,7 @@ RLRecorder::~RLRecorder()
 RLRecorder::RLRecorder(DTMF_type *_currentTone)
 {
     
-    peakFreqs.clear();
+    //peakFreqs.clear();
     currentTone = _currentTone;
     /*
       workCArray = { 1, 0, -1, 0, 1, 0, -1, 0 };
@@ -53,11 +53,11 @@ bool RLRecorder::onProcessSamples(const sf::Int16* samples, std::size_t sampleCo
     //cout << "sampleTime: " << sampleTime.asMilliseconds() << endl;
     //cout << "sampleCount: " << sampleCount << endl;
     
-    workCArray.resize(static_cast<long unsigned int>(sampleCount));
+    //workCArray.resize(static_cast<long unsigned int>(sampleCount));
 
     for (std::size_t i = 0; i < sampleCount; i++)
     {
-	workCArray[i] = samples[i];
+	//workCArray[i] = samples[i];
 	workFArray[i] = static_cast<float>(samples[i]);
     }
 
@@ -90,24 +90,25 @@ bool RLRecorder::onProcessSamples(const sf::Int16* samples, std::size_t sampleCo
 	}
     }
     
-    fft(workCArray);
-    applyHammingWindow(workCArray);
+    //fft(workCArray);
+    //applyHammingWindow(workCArray);
     
     //int lower = static_cast<int>(650.0*sampleCount/FS/sampleTime.asSeconds());
     //int upper = static_cast<int>(1650.0*sampleCount/FS/sampleTime.asSeconds());
     // int lower = 600.0*sampleTime.asSeconds();
-    int lower = (650.0/(sampleCount/sampleTime.asSeconds()))*sampleCount;
-    int upper = (1650.0/(sampleCount/sampleTime.asSeconds()))*sampleCount;
+    //int lower = (650.0/(sampleCount/sampleTime.asSeconds()))*sampleCount;
+    //int upper = (1650.0/(sampleCount/sampleTime.asSeconds()))*sampleCount;
     //cout << "lower index: " << lower << endl;
     //cout << "upper index: " << upper << endl;
 
-    int max = 0;
+    //int max = 0;
 /*	
 	for (Complex c : workCArray)
 	if (abs(c) > max)
 	max = abs(c);
 //*/
-///*	
+/*
+    
     for (int i = lower; i < upper; i++)
 	if (abs(workCArray[i]) > max)
 	    max = abs(workCArray[i]);

@@ -22,16 +22,16 @@ public:
 private:
     void updateCurrentTone();
     DTMF_type *currentTone;
-    CArray workCArray;
+    //CArray workCArray;
     float workFArray[50000]; //EXTREME WARNING RIGHT HERE CANNOT HANDLE IF SAMPLECOUNT IS HIGHER. THIS IS WHY THE PROGRAM CRASHES :oooouuu
     float freq_mags[8];
     short DTMF_byte;
-    int threshold;
+    //int threshold;
     float upperthreshold;
     float lowerthreshold;
     sf::Clock clock;
     sf::Time sampleTime;
-    std::vector<double> peakFreqs;
+    //std::vector<double> peakFreqs;
 };
 
 #endif
