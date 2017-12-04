@@ -103,6 +103,8 @@ string DLL::interpret(DTMF_type varType)
 // Send data
 int DLL::send(std::string varStr)
 {
+	int resendCount = 0;
+
 	if (isSending || isReceiving)
 	{
 		cout << "Transmission in progress. Please wait..." << endl;
@@ -214,9 +216,17 @@ send_reset:
 		mysleep(10);
 	}
 
+	// Check for reset maximum
+	if (resendCount >2)
+	{
+		cout << "Resend maximum reached. Message not delivered." << endl;
+		return 0;
+	}
+
 	// Reset if none is received
-	cout << "Message not acknowledged, resending..." << endl << endl;
+	cout << "Message not acknowledged, resend attempt " << resendCount+1 << "..." << endl << endl;
 	sentMessages--;
+	resendCount++;
 	goto send_reset;
 }
 
