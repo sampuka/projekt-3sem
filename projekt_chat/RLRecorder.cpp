@@ -207,7 +207,7 @@ void RLRecorder::updateCurrentTone()
       DTMF_byte |= 1 << i;
     */
     //cout << "asd " << DTMF_byte << endl;
-    cout << "DTMF_byte: " << bitset<8>(DTMF_byte).to_string() << endl;
+    //cout << "DTMF_byte: " << bitset<8>(DTMF_byte).to_string() << endl;
 
     switch (DTMF_byte)
     {
@@ -293,7 +293,7 @@ void RLRecorder::updateCurrentTone()
 
     default:
 	*currentTone = DTMF_UNKNOWN;
-	cout << "DTMF_UNKNOWN" << endl;
+	//cout << "DTMF_UNKNOWN" << endl;
 	/*	
 		for(double freq : peakFreqs)
 		cout << freq << ", ";
@@ -302,5 +302,5 @@ void RLRecorder::updateCurrentTone()
 	break;
     }
     //cout << "fff" << endl;
-    cout << "DTMF TYPE: " << *currentTone << endl;
+    //cout << "DTMF TYPE: " << *currentTone << endl;
 }

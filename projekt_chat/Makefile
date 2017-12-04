@@ -1,8 +1,8 @@
 OBJS = Source.o DLL.o DTMF.o rc_fft.o RLRecorder.o DTMF_type.o goertzel.o
 CC = g++
 DEBUG = -g
-CFLAGS = -Wall -c $(DEBUG) -std=c++11
-LFLAGS = -Wall $(DEBUG) -lsfml-system -lsfml-audio
+CFLAGS = -Wall -c $(DEBUG) -std=c++11 -lpthread
+LFLAGS = -Wall $(DEBUG) -lsfml-system -lsfml-audio -lpthread
 
 bin : $(OBJS)
 	$(CC) $(OBJS) -o bin $(LFLAGS)
