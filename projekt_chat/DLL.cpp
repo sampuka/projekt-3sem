@@ -105,8 +105,17 @@ string DLL::interpret(DTMF_type varType)
 // Send data
 int DLL::send(std::string varStr)
 {
+	// Check for case: empty string
+	if (varStr == "")
+	{
+		debugOutput("Invalid message input");
+		return 0;
+	}
+
+	// Reset resend maximum
 	int resendCount = 0;
 
+	// Check for sending/receiving flags
 	if (isSending || isReceiving)
 	{
 		debugOutput("Transmission in progress. Please wait...");
@@ -221,6 +230,7 @@ send_reset:
 	if (resendCount > 2)
 	{
 		debugOutput("Resend maximum reached. Message not delivered.");
+		sentMessages--;
 		isSending = false;
 		return 0;
 	}
@@ -377,6 +387,7 @@ read_reset:								// Location for reset
 	if ((bitset<8>(rcv_checksum).to_string()) != checksum_str)
 	{
 		debugOutput("Unmatching checksums, message discarded. Starting over...");
+		isReceiving = false; // Skaber delay mellem resends, hvor man selv kan sende..........
 		goto read_reset;
 	}
 	
@@ -438,7 +449,6 @@ void DLL::debugOutput(string _output)
 
 string DLL::getMsg()
 {
-
 	string msg = receivedMessages[0];
 	receivedMessages.erase(receivedMessages.begin());
 	return msg;

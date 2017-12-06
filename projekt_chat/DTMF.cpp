@@ -27,7 +27,7 @@ DTMF::DTMF(int toneLength)
 {
     bufferTime = toneLength;
     double sampleInterval = (bufferTime/1000.f)/SAMPLES_PER_BUFFER;
-    cout << "sampleInterval: " << sampleInterval << endl;
+    //cout << "sampleInterval: " << sampleInterval << endl;
     
     for (unsigned int j = 0; j < sampleArray.size(); j++)
     {
@@ -93,14 +93,14 @@ void DTMF::startRecording()
     recorder = new RLRecorder(&currentTone);
     
     if (!RLRecorder::isAvailable())
-        cout << "no mic available" << endl;
+        cout << "No mic available" << endl;
     else
     {
 	vector<string> mic_list = recorder->getAvailableDevices();
 	cout << "Available devices: " << endl;
 	for (string mic : mic_list)
 	    cout << mic << endl;
-	cout << "choosing mic: " << recorder->getDefaultDevice() << endl;
+	cout << "Choosing mic:\n" << recorder->getDefaultDevice() << endl;
     }
     //cout << "mic available" << endl;
     recorder->start(FS);
