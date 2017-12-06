@@ -269,7 +269,7 @@ read_reset:								// Location for reset
 		{
 			for (int i = 0; i < size(receivedMessages); i++)
 			{
-				cout << receivedMessages[i];
+				cout << getMsg();
 			}
 		}
 	}
@@ -455,6 +455,10 @@ void DLL::debugOutput(string _output)
 
 string DLL::getMsg()
 {
+	if (size(receivedMessages) == 0)
+	{
+		return "";
+	}
 	string msg = receivedMessages[0];
 	receivedMessages.erase(receivedMessages.begin());
 	return msg;
@@ -483,30 +487,6 @@ void DLL::sendMore(string _message)
 		dtmf->play_wait(DATA_SEP);
 	}
 
-}
-
-string DLL::receiveMore()
-{
-	/*
-	more_reset:
-	// Stuck in loop; wait for start
-	while ((dtmf->listen() != DATA_START_MSG) || isSending)
-	{
-		//cout << interpret(dtmf->listen()) << endl;
-		// Busy waiting...
-	}
-
-	debugOutput("Hearing flag\tSTART\t(1/2)");
-
-	// Wait half a tone, check if tone is still START flag
-	mysleep(time / 2);
-	if (dtmf->listen() != DATA_MSG_START)
-	{
-		goto more_reset;
-	}
-
-	read();
-	*/
 }
 
 DLL::~DLL()

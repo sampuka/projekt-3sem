@@ -21,7 +21,7 @@ public:
 	void debugOutput(string);
 	string getMsg();
 	void sendMore(string);
-	string receiveMore();
+//	string receiveMore();
     ~DLL();
     
 private:
