@@ -246,15 +246,16 @@ send_reset:
 // Read data
 void DLL::read()
 {
-	string received_msg;				// Final received message, translated
-	string msg_partition;
-	string number_str;
-	string data_str;					// Temprorary string of recieved bits, without security bits
-	string checksum_str;
+	string received_msg;				// Received message for individual packet.
+	string msg_partition;				// String used for stitching together packets
+	string number_str;					// Temprorary string of recieved numbering
+	string data_str;					// Temprorary string of recieved data
+	string checksum_str;				// Temprorary string of recieved checksum
 	vector<DTMF_type> received_data;	// Vector storing received bits
-	int ackNumber;
-	
-read_reset:								// Location for reset
+	int ackNumber;						// Acknowledge counter
+
+	// Location for reset
+read_reset:								
 
 	// Clear variables upon start/reset
 	received_msg = "";		
@@ -269,7 +270,7 @@ read_reset:								// Location for reset
 		if (dtmf->listen() == DATA_SEP)
 		{
 			if (msg_partition.length() > 0)
-			cout << /*"Received message:\t" <<*/ msg_partition << endl;;
+			cout << msg_partition << endl;;
 			msg_partition = "";
 		}
 	}
@@ -287,8 +288,7 @@ read_reset:								// Location for reset
 	isReceiving = true;
 	debugOutput("Hearing flag\tSTART\t(2/2)");
 
-	// Wait until middle of first tone
-	//mysleep(time);
+	// Wait until 0.25 of first tone (first sample)
 	mysleep(0.75*time);
 
 	// Start recording to received_data
@@ -297,6 +297,7 @@ read_reset:								// Location for reset
 
 	while (dtmf->listen() != DATA_STOP)	// Record while flag is not STOP
 	{	
+		// Sample 3 tones
 		DTMF_type sample[3] ;
 		sample[0] = dtmf->listen();
 		mysleep(0.25*time);
@@ -306,7 +307,7 @@ read_reset:								// Location for reset
 
 		sample[2] = dtmf->listen();
 
-		// Tale three listen samples
+		// Check for majority / not unknown
 		if ((sample[0] == sample[1]) && (sample[0] != DTMF_UNKNOWN))
 		{
 			received_data.push_back(sample[0]);
@@ -334,10 +335,6 @@ read_reset:								// Location for reset
 
 		debugOutput("Hearing\t" + interpret(received_data[(received_data.size()) - 1]));
 		mysleep(0.5*time);
-
-		/*received_data.push_back(dtmf->listen());
-		cout << "Hearing\t" << interpret(received_data[(received_data.size())-1]) << endl;
-		mysleep(time);*/
 	}
 	
 	debugOutput("Hearing flag\tSTOP");
@@ -361,10 +358,11 @@ read_reset:								// Location for reset
 		checksum_str += interpret(received_data[i]);
 	}
 
-	// Output
+	// Debug output received numbering/checksum
 	debugOutput("Received number:\t" + number_str);
 	debugOutput("Received checksum:\t" + checksum_str + '\n');
 
+	// Recreate message from data
 	stringstream sstream(data_str);
 
 	while (sstream.good())
@@ -393,18 +391,16 @@ read_reset:								// Location for reset
 	if ((bitset<8>(rcv_checksum).to_string()) != checksum_str)
 	{
 		debugOutput("Unmatching checksums, message discarded. Starting over...");
-		isReceiving = false; // Skaber delay mellem resends, hvor man selv kan sende..........
+		isReceiving = false; // Creates unwanted window - negligibly short.
 		goto read_reset;
 	}
 	
 	debugOutput("Matching checksums.\n");
 	
-	// Check for numbering, save message in receivedMessages.
+	// Check for numbering, if true; add message to rest of message.
 	ackNumber = (sentAcks % 2);
 	if (stoi(number_str) != ackNumber)
 	{
-		//cout << "Received message:\t" << received_msg << endl;	// Output message
-		//receivedMessages.push_back(received_msg);				// Add received message to message buffer
 		msg_partition += (received_msg + '\b');
 	}
 	else 
@@ -422,13 +418,9 @@ read_reset:								// Location for reset
 	{
 	case 0:
 		dtmf->play_wait(DATA_ACK0);
-//		dtmf->play_wait(DATA_ACK0);
-//		dtmf->play_wait(DATA_ACK0);
 		break;
 	case 1:
 		dtmf->play_wait(DATA_ACK1);
-//		dtmf->play_wait(DATA_ACK1);
-//		dtmf->play_wait(DATA_ACK1);
 		break;
 	}
 	sentAcks++;
@@ -446,6 +438,7 @@ void DLL::beginRead()
 	read_thread = new thread(&DLL::read, this);
 }
 
+// Function for enabling/disabling output - see top #define DEBUG
 void DLL::debugOutput(string _output)
 {
 	if (DEBUG)
@@ -454,6 +447,7 @@ void DLL::debugOutput(string _output)
 	}
 }
 
+// Not currently in use (but nice to have in case of changes)
 string DLL::getMsg()
 {
 	if (size(receivedMessages) == 0)

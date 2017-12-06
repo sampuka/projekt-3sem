@@ -14,14 +14,12 @@ class DLL
 public:
     DLL();
 	DLL(int);
-//	void playTone();
-	int send(std::string); //should block
-	string interpret(DTMF_type);
-	void beginRead();
-	void debugOutput(string);
-	string getMsg();
-	void sendMore(string);
-//	string receiveMore();
+	int send(std::string);			// Send individual message
+	string interpret(DTMF_type);	// Interpret DTMF_type
+	void beginRead();				// Intitialize read() in thread
+	void debugOutput(string);		// Togglable output
+	string getMsg();				// Used for pop_front (not currently in use)
+	void sendMore(string);			// Sending more messages, with message seperator
     ~DLL();
     
 private:

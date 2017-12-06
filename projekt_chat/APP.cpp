@@ -12,23 +12,25 @@ void APP::start()
 
 	myDLL.beginRead();
 	cout << "--------------------------------------" << endl;
-	cout << endl << "Welcome to \"projekt_chat\", start chatting!" << endl << endl;
 
 	string userName;
 	cout << "What is your user name?" << endl;
 	getline(cin, userName);
+	cout << endl;
+
+	cout << "Welcome to \"projekt_chat\", " << userName << "! - Start chatting!" << endl << endl;
 
 	while (true)
 	{
-		cout << endl;
-		//cout << "Enter your message:" << endl;
 		string userInput;
 
 		getline(cin, userInput);
 
-		cout << endl;
+		if (userInput.length() > 0)
+		{
+			myDLL.sendMore((userName + ": " + userInput));
+		}
 
-		myDLL.sendMore((userName + '\t' + userInput));
 	}
 }
 
