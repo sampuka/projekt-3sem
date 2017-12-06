@@ -405,7 +405,7 @@ read_reset:								// Location for reset
 	{
 		//cout << "Received message:\t" << received_msg << endl;	// Output message
 		//receivedMessages.push_back(received_msg);				// Add received message to message buffer
-		msg_partition += received_msg;
+		msg_partition += (received_msg + '\b');
 	}
 	else 
 	{
