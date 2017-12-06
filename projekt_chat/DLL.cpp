@@ -247,6 +247,7 @@ send_reset:
 void DLL::read()
 {
 	string received_msg;				// Final received message, translated
+	string msg_partition;
 	string number_str;
 	string data_str;					// Temprorary string of recieved bits, without security bits
 	string checksum_str;
@@ -256,7 +257,7 @@ void DLL::read()
 read_reset:								// Location for reset
 
 	// Clear variables upon start/reset
-	received_msg = "";				
+	received_msg = "";		
 	number_str = "";
 	data_str = "";				
 	checksum_str = "";
@@ -267,11 +268,9 @@ read_reset:								// Location for reset
 	{
 		if (dtmf->listen() == DATA_SEP)
 		{
-			for (int i = 0; i < size(receivedMessages); i++)
-			{
-				cout << getMsg() << '\b';
-			}
-			cout << endl;
+			if (msg_partition.length() > 0)
+			cout << msg_partition << endl;;
+			msg_partition = "";
 		}
 	}
 
@@ -404,8 +403,9 @@ read_reset:								// Location for reset
 	ackNumber = (sentAcks % 2);
 	if (stoi(number_str) != ackNumber)
 	{
-		cout << "Received message:\t" << received_msg << endl;	// Output message
-		receivedMessages.push_back(received_msg);				// Add received message to message buffer
+		//cout << "Received message:\t" << received_msg << endl;	// Output message
+		//receivedMessages.push_back(received_msg);				// Add received message to message buffer
+		msg_partition += received_msg;
 	}
 	else 
 	{
