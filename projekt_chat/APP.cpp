@@ -14,6 +14,10 @@ void APP::start()
 	cout << "--------------------------------------" << endl;
 	cout << endl << "Welcome to \"projekt_chat\", start chatting!" << endl << endl;
 
+	string userName;
+	cout << "What is your user name?" << endl;
+	getline(cin, userName);
+
 	while (true)
 	{
 		cout << endl;
@@ -24,9 +28,10 @@ void APP::start()
 
 		cout << endl;
 
-		myDLL.sendMore(userInput);
+		myDLL.sendMore((userName + '\t' + userInput));
 	}
 }
+
 
 
 APP::~APP()

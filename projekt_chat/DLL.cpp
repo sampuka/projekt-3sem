@@ -228,13 +228,13 @@ send_reset:
 	}
 
 	// Check for reset maximum
-	if (resendCount > 2)
+/*	if (resendCount > 2)
 	{
 		debugOutput("Resend maximum reached. Message not delivered.");
 		sentMessages--;
 		isSending = false;
 		return 0;
-	}
+	}*/
 
 	// Reset if none is received
 	debugOutput("Message not acknowledged, resend attempt " + to_string(resendCount+1) + "...\n");
@@ -269,7 +269,7 @@ read_reset:								// Location for reset
 		if (dtmf->listen() == DATA_SEP)
 		{
 			if (msg_partition.length() > 0)
-			cout << msg_partition << endl;;
+			cout << /*"Received message:\t" <<*/ msg_partition << endl;;
 			msg_partition = "";
 		}
 	}
@@ -413,7 +413,7 @@ read_reset:								// Location for reset
 	}
 
 	// Wait and send acknowledge with numbering
-	mysleep(100);
+	mysleep(time);
 	ackNumber = (sentAcks % 2); 
 
 	debugOutput("Sending acknowledge\tACK" + to_string(ackNumber));
@@ -422,13 +422,13 @@ read_reset:								// Location for reset
 	{
 	case 0:
 		dtmf->play_wait(DATA_ACK0);
-		dtmf->play_wait(DATA_ACK0);
-		dtmf->play_wait(DATA_ACK0);
+//		dtmf->play_wait(DATA_ACK0);
+//		dtmf->play_wait(DATA_ACK0);
 		break;
 	case 1:
 		dtmf->play_wait(DATA_ACK1);
-		dtmf->play_wait(DATA_ACK1);
-		dtmf->play_wait(DATA_ACK1);
+//		dtmf->play_wait(DATA_ACK1);
+//		dtmf->play_wait(DATA_ACK1);
 		break;
 	}
 	sentAcks++;
@@ -482,10 +482,12 @@ void DLL::sendMore(string _message)
 					index++;
 				}
 			}
+			mysleep(time);
 			send(_message.substr(lastIndex, (index - lastIndex)));
 			lastIndex = index;
 		}
 		dtmf->play_wait(DATA_SEP);
+		debugOutput("Sending data seperator");
 	}
 
 }
