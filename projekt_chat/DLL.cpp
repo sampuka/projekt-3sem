@@ -269,8 +269,9 @@ read_reset:								// Location for reset
 		{
 			for (int i = 0; i < size(receivedMessages); i++)
 			{
-				cout << getMsg();
+				cout << getMsg() << '\b';
 			}
+			cout << endl;
 		}
 	}
 
