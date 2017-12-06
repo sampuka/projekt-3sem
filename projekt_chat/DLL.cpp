@@ -36,6 +36,7 @@ void mysleep(int ms)
 #define DATA_ACK1 DTMF_B
 #define DATA_START DTMF_8
 #define DATA_STOP DTMF_0
+#define DATA_SEP DTMF_3
 
 using namespace std;
 
@@ -264,8 +265,13 @@ read_reset:								// Location for reset
 	// Stuck in loop; wait for start
 	while ((dtmf->listen() != DATA_START) || isSending)
 	{
-		//cout << interpret(dtmf->listen()) << endl;
-		// Busy waiting...
+		if (dtmf->listen() == DATA_SEP)
+		{
+			for (int i = 0; i < size(receivedMessages); i++)
+			{
+				cout << receivedMessages[i];
+			}
+		}
 	}
 
 	debugOutput("Hearing flag\tSTART\t(1/2)");
@@ -452,6 +458,55 @@ string DLL::getMsg()
 	string msg = receivedMessages[0];
 	receivedMessages.erase(receivedMessages.begin());
 	return msg;
+}
+
+void DLL::sendMore(string _message)
+{
+	if (_message != "")
+	{
+		vector<string> partMessage;
+		int lastIndex = 0;
+		int index = 0;
+
+		while (index < _message.length())
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				if (index < _message.length())
+				{
+					index++;
+				}
+			}
+			send(_message.substr(lastIndex, (index - lastIndex)));
+			lastIndex = index;
+		}
+		dtmf->play_wait(DATA_SEP);
+	}
+
+}
+
+string DLL::receiveMore()
+{
+	/*
+	more_reset:
+	// Stuck in loop; wait for start
+	while ((dtmf->listen() != DATA_START_MSG) || isSending)
+	{
+		//cout << interpret(dtmf->listen()) << endl;
+		// Busy waiting...
+	}
+
+	debugOutput("Hearing flag\tSTART\t(1/2)");
+
+	// Wait half a tone, check if tone is still START flag
+	mysleep(time / 2);
+	if (dtmf->listen() != DATA_MSG_START)
+	{
+		goto more_reset;
+	}
+
+	read();
+	*/
 }
 
 DLL::~DLL()

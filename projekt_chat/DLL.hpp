@@ -20,6 +20,8 @@ public:
 	void beginRead();
 	void debugOutput(string);
 	string getMsg();
+	void sendMore(string);
+	string receiveMore();
     ~DLL();
     
 private:

@@ -24,7 +24,7 @@ void APP::start()
 
 		cout << endl;
 
-		myDLL.send(userInput);
+		myDLL.sendMore(userInput);
 	}
 }
 
