@@ -14,7 +14,7 @@ void APP::start()
 	cout << "--------------------------------------" << endl;
 
 	string userName;
-	cout << "What is your user name?" << endl;
+	cout << "What is your display name?" << endl;
 	getline(cin, userName);
 	cout << endl;
 
@@ -33,8 +33,6 @@ void APP::start()
 
 	}
 }
-
-
 
 APP::~APP()
 {

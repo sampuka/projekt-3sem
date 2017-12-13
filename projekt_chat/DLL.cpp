@@ -59,7 +59,7 @@ DLL::DLL(int varTime)
 
 	// Initiate flags for sending and receiving
 	isReceiving = false;			
-	isSending = false;			
+	isSending = false;		
 }
 
 // Interpret DTMF_Type
@@ -246,19 +246,21 @@ send_reset:
 // Read data
 void DLL::read()
 {
-	string received_msg;				// Received message for individual packet.
-	string msg_partition;				// String used for stitching together packets
+	string msg_partition;				// Received message for individual packet.
+	string msg_assemble;				// String used for stitching together packets
+
+	int ackNumber;						// Acknowledge counter
+	vector<DTMF_type> received_data;	// Vector storing received bits
+
 	string number_str;					// Temprorary string of recieved numbering
 	string data_str;					// Temprorary string of recieved data
 	string checksum_str;				// Temprorary string of recieved checksum
-	vector<DTMF_type> received_data;	// Vector storing received bits
-	int ackNumber;						// Acknowledge counter
 
 	// Location for reset
 read_reset:								
 
 	// Clear variables upon start/reset
-	received_msg = "";		
+	msg_partition = "";		
 	number_str = "";
 	data_str = "";				
 	checksum_str = "";
@@ -269,9 +271,10 @@ read_reset:
 	{
 		if (dtmf->listen() == DATA_SEP)
 		{
-			if (msg_partition.length() > 0)
-			cout << msg_partition << endl;;
-			msg_partition = "";
+			if (msg_assemble.length() > 0)
+			cout << msg_assemble << endl;
+			//msg_received.push_back(msg_assemble);
+			msg_assemble = "";
 		}
 	}
 
@@ -295,10 +298,59 @@ read_reset:
 
 	debugOutput("Recording started.");
 
+	vector<DTMF_type> dtmf_samples;
+
+	while (dtmf->listen() != DATA_STOP)	// Record while flag is not STOP
+	{
+		// Sample 3 tones
+		dtmf_samples.push_back(dtmf->listen());
+		mysleep(0.25*time);
+
+		dtmf_samples.push_back(dtmf->listen());
+		mysleep(0.25*time);
+
+		dtmf_samples.push_back(dtmf->listen());
+		mysleep(0.5*time);
+	}
+
+	debugOutput("Hearing flag\tSTOP");
+	debugOutput("Recording ended.\n");
+
+	for (int i = 0; i < size(dtmf_samples); i = i + 3)
+	{
+		// Check for majority / not unknown
+		if ((dtmf_samples[i] == dtmf_samples[i+1]) && (i != DTMF_UNKNOWN))
+		{
+			received_data.push_back(dtmf_samples[i]);
+		}
+		else if ((dtmf_samples[i] == dtmf_samples[i+2]) && (dtmf_samples[i] != DTMF_UNKNOWN))
+		{
+			received_data.push_back(dtmf_samples[i]);
+		}
+		else if ((dtmf_samples[i+1] == dtmf_samples[i+2]) && (dtmf_samples[i+1] != DTMF_UNKNOWN))
+		{
+			received_data.push_back(dtmf_samples[i+1]);
+		}
+		else if ((dtmf_samples[i] == DTMF_UNKNOWN) && (dtmf_samples[i+1] == DTMF_UNKNOWN) && (dtmf_samples[i+2] == DTMF_UNKNOWN))
+		{
+			received_data.push_back(DTMF_UNKNOWN);
+		}
+		else for (int j = i; j < (i+3); j++)
+		{
+			if (dtmf_samples[j] != DTMF_UNKNOWN)
+			{
+				received_data.push_back(dtmf_samples[j]);
+				break;
+			}
+		}
+	}
+	// Old method, maybe reimplement if stuff doesnt work
+	/*
 	while (dtmf->listen() != DATA_STOP)	// Record while flag is not STOP
 	{	
 		// Sample 3 tones
-		DTMF_type sample[3] ;
+		DTMF_type sample[3];
+
 		sample[0] = dtmf->listen();
 		mysleep(0.25*time);
 
@@ -337,8 +389,12 @@ read_reset:
 		mysleep(0.5*time);
 	}
 	
+
 	debugOutput("Hearing flag\tSTOP");
 	debugOutput("Recording ended.\n");
+
+	*/
+
 
 	// Interpret numbering
 	for (int i = 0; i < 1; i++)
@@ -369,14 +425,14 @@ read_reset:
 	{
 		bitset<8> bits;
 		sstream >> bits;
-		received_msg += char(bits.to_ulong());
+		msg_partition += char(bits.to_ulong());
 	}
 	
 	// Check for checksum match, reset if negative
 	int rcv_checksum = 0;
-	for (int i = 0; i < received_msg.size(); i++)
+	for (int i = 0; i < msg_partition.size(); i++)
 	{
-		rcv_checksum += received_msg[i];
+		rcv_checksum += msg_partition[i];
 	}
 
 	while (rcv_checksum > 255)
@@ -401,7 +457,7 @@ read_reset:
 	ackNumber = (sentAcks % 2);
 	if (stoi(number_str) != ackNumber)
 	{
-		msg_partition += (received_msg + '\b');
+		msg_assemble += (msg_partition + '\b');
 	}
 	else 
 	{
@@ -450,12 +506,12 @@ void DLL::debugOutput(string _output)
 // Not currently in use (but nice to have in case of changes)
 string DLL::getMsg()
 {
-	if (size(receivedMessages) == 0)
+	if (size(msg_received) == 0)
 	{
 		return "";
 	}
-	string msg = receivedMessages[0];
-	receivedMessages.erase(receivedMessages.begin());
+	string msg = msg_received[0];
+	msg_received.erase(msg_received.begin());
 	return msg;
 }
 

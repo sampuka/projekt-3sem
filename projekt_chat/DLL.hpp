@@ -32,7 +32,7 @@ private:
 	int sentAcks;
 	bool isReceiving;
 	bool isSending;
-	vector<string> receivedMessages;
+	vector<string> msg_received;
 };
 
 #endif
