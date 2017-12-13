@@ -28,7 +28,7 @@ void APP::start()
 
 		if (userInput.length() > 0)
 		{
-			myDLL.sendMore((userName + ": " + userInput), 5);
+			myDLL.sendMore((userName + ": " + userInput), 3);
 		}
 
 	}
