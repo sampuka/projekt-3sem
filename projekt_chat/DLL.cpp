@@ -518,7 +518,7 @@ string DLL::getMsg()
 	return msg;
 }
 
-void DLL::sendMore(string _message)
+void DLL::sendMore(string _message, int _partition)
 {
 	if (_message != "")
 	{
@@ -528,7 +528,7 @@ void DLL::sendMore(string _message)
 
 		while (index < _message.length())
 		{
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < _partition; i++)
 			{
 				if (index < _message.length())
 				{

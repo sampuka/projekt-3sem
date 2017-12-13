@@ -19,7 +19,7 @@ public:
 	void beginRead();				// Intitialize read() in thread
 	void debugOutput(string);		// Togglable output
 	string getMsg();				// Used for pop_front (not currently in use)
-	void sendMore(string);			// Sending more messages, with message seperator
+	void sendMore(string, int);			// Sending more messages, with message seperator
     ~DLL();
     
 private:
