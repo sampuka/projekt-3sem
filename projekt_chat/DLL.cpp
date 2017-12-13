@@ -7,7 +7,7 @@
 #include <sstream>
 #include <thread>
 
-#define DEBUG false
+#define DEBUG true
 
 #ifdef _WIN32
 #include "windows.h"
@@ -298,6 +298,7 @@ read_reset:
 
 	debugOutput("Recording started.");
 
+	/*
 	vector<DTMF_type> dtmf_samples;
 
 	while (dtmf->listen() != DATA_STOP)	// Record while flag is not STOP
@@ -344,8 +345,10 @@ read_reset:
 			}
 		}
 	}
+//	*/
+
 	// Old method, maybe reimplement if stuff doesnt work
-	/*
+//	/*
 	while (dtmf->listen() != DATA_STOP)	// Record while flag is not STOP
 	{	
 		// Sample 3 tones
@@ -393,7 +396,7 @@ read_reset:
 	debugOutput("Hearing flag\tSTOP");
 	debugOutput("Recording ended.\n");
 
-	*/
+//	*/
 
 
 	// Interpret numbering
