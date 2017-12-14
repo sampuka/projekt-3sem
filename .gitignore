@@ -8,8 +8,8 @@
 /sfml_test/RLRecorder.o
 /sfml_test/rc_fft.o
 /sfml_test/bin
-
 /sfml_test/.vs/projekt_chat/v15
+
 /projekt_chat/bin
 /projekt_chat/APP.o
 /projekt_chat/DLL.o
@@ -19,3 +19,6 @@
 /projekt_chat/rc_fft.o
 /projekt_chat/Source.o
 /projekt_chat/goertzel.o
+
+/dtmf_test/*.o
+/dtmf_test/bin
