@@ -7,6 +7,25 @@
 
 using namespace std;
 
+#ifdef _WIN32
+#include "windows.h"
+
+void mysleep(int ms)
+{
+    Sleep(ms);
+}
+
+#else
+#include "unistd.h"
+
+void mysleep(int ms)
+{
+    const struct timespec temp = {0, ms*1000000};
+    nanosleep(&temp, NULL);
+}
+
+#endif
+
 #define INTERVAL 100
 #define COUNT 10
 
@@ -34,9 +53,11 @@ int main()
     while (1)
     {
 	a = dtmf.listen();
-	nanosleep((const struct timespec[]){{0, INTERVAL*1000000}}, NULL);
+        mysleep(INTERVAL);
+	
 	b = dtmf.listen();
-	nanosleep((const struct timespec[]){{0, INTERVAL*1000000}}, NULL);
+        mysleep(INTERVAL);
+	
 	if (a == b)
 	    cout << a << endl;
 	else if (a == DTMF_UNKNOWN)
