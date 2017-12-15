@@ -1,5 +1,8 @@
 #include "DTMF_type.hpp"
 
+#include <iostream>
+#include <string>
+
 std::ostream& operator<< (std::ostream& os, const DTMF_type& dtmf)
 {
     std::string to_cout = "DTMF_";
